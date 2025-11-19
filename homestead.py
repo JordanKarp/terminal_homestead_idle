@@ -1,13 +1,16 @@
 from player import Player
+from natural_resources import natural_resource_dict
 
 
 class Homestead:
     def __init__(self):
-        self.trees = 110
-        self.bushes = 110
+        self.natural_resources = create_random_natural_resources()
         self.player = Player()
         self.structures = []
 
+    def create_random_natural_resources(self):
+        
+    
     def create_options_dict(self):
         options = {}
         if self.player.has_at_least("Sticks", 2):
@@ -20,8 +23,9 @@ class Homestead:
 
     def display(self):
         print("NATURE:")
-        print(f"\t{self.trees} trees")
-        print(f"\t{self.bushes} bushes")
+        for nat_resc in self.natural_resources:
+            if self.natural_resources.get(nat_resc, 0) > 0:
+                print(f"- {self.natural_resources[nat_resc]} {nat_resc}")
         print("INVENTORY:")
         self.player.display_inventory()
         print("STRUCTURES:")
