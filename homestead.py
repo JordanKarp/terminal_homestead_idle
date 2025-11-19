@@ -1,3 +1,5 @@
+from random import randint
+
 from player import Player
 from natural_resources import natural_resource_dict
 
@@ -9,7 +11,13 @@ class Homestead:
         self.structures = []
 
     def create_random_natural_resources(self):
-        
+        resources = {}
+        for resource, resource_data in natural_resource_dict.items():
+            min = resource_data.get('minimum', 0)
+            max = resource_data.get('maximum', 0)
+            growth = resource_data.get('maximum', 0)
+            number = randint(min, max)
+            resources[resource] = number
     
     def create_options_dict(self):
         options = {}
