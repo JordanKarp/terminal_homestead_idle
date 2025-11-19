@@ -18,14 +18,15 @@ class Homestead:
             growth = resource_data.get('maximum', 0)
             number = randint(min, max)
             resources[resource] = number
+        return resources
     
     def create_options_dict(self):
         options = {}
         if self.player.has_at_least("Sticks", 2):
             options.update({"Craft Fire": self.craft_fire})
-        if self.trees > 0:
+        if self.natural_resources.get('trees',0) >0:
             options.update({"Chop Tree": self.chop_tree})
-        if self.bushes > 0:
+        if self.natural_resources.get('bushes',0) >0:
             options.update({"Chop Bush": self.chop_bush})
         return options
 
@@ -48,11 +49,12 @@ class Homestead:
         print("A fire has been made")
 
     def chop_tree(self):
-        self.trees -= 1
+        self.natural_resources['trees'] -= 1
+        self.natural_resources['stumps'] += 1
         self.player.add_to_inventory("Log", 1)
         print("one tree chopped")
 
     def chop_bush(self):
-        self.bushes -= 1
+        self.natural_resources['bushes'] -= 1
         self.player.add_to_inventory("Sticks", 2)
         print("one bush chopped")
