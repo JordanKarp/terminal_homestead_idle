@@ -1,4 +1,4 @@
-natural_resources = {
+natural_resource_dict = {
     "trees": {
         "minimum": 10,
         "maximum": 1000,
