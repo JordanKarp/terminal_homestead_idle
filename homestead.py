@@ -6,7 +6,7 @@ from natural_resources import natural_resource_dict
 
 class Homestead:
     def __init__(self):
-        self.natural_resources = create_random_natural_resources()
+        self.natural_resources = self.create_random_natural_resources()
         self.player = Player()
         self.structures = []
 
@@ -28,6 +28,8 @@ class Homestead:
             options.update({"Chop Tree": self.chop_tree})
         if self.natural_resources.get('bushes',0) >0:
             options.update({"Chop Bush": self.chop_bush})
+        if self.natural_resources.get('rocks',0) >0:
+            options.update({"Gather Rocks": self.gather_rock})
         return options
 
     def display(self):
@@ -52,9 +54,11 @@ class Homestead:
         self.natural_resources['trees'] -= 1
         self.natural_resources['stumps'] += 1
         self.player.add_to_inventory("Log", 1)
-        print("one tree chopped")
 
     def chop_bush(self):
         self.natural_resources['bushes'] -= 1
         self.player.add_to_inventory("Sticks", 2)
-        print("one bush chopped")
+
+    def gather_rock(self):
+        self.natural_resources['rocks'] -= 1
+        self.player.add_to_inventory("Rock(s)", 1)
