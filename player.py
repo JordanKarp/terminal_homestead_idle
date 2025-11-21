@@ -22,9 +22,9 @@ class Player:
     def display_inventory(self):
         if self.inventory:
             for item, count in self.inventory.items():
-                print("\t", count, item)
+                print(f" - {count}x {item}")
         else:
-            print("\t", "None")
+            print(f" - None")
 
     def has_at_least(self, item, count):
         if item in self.inventory and self.inventory[item] >= count:
