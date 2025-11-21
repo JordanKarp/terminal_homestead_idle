@@ -50,6 +50,12 @@ class Homestead:
         print()
         print()
 
+    # FIX
+    def handle_task(self, task):
+        task.function()
+        self.previous_message = task.message
+        self.duration = task.message
+
     def craft_fire(self):
         self.player.remove_from_inventory("Sticks", 2)
         self.structures.append("Fire")
