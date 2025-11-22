@@ -26,7 +26,7 @@ def get_number_in_range(prompt, max_val, min_val=1):
 def question(prompt, options: dict):
     """
     Asks a multiple-choice question where each option maps to a function.
-    
+
     Args:
         prompt (str): The question to display.
         options (dict[str, callable]): Keys are labels, values are functions.
@@ -54,20 +54,23 @@ def question(prompt, options: dict):
 
     # Run selected function
     selected_label = labeled_options[choice - 1]
-    func = options.get(selected_label)
+    return options.get(selected_label)
 
-    try:
-        func()
-        return True
-    except Exception as e:
-        print(f"Error calling function '{selected_label}': {e}")
-        return False
+    # func = options.get(selected_label)
+
+    # try:
+    #     func()
+    #     return True
+    # except Exception as e:
+    #     print(f"Error calling function '{selected_label}': {e}")
+    #     return False
+
 
 # Online Python - IDE, Editor, Compiler, Interpreter
 def clear_terminal():
     # For Windows
-    if os.name == 'nt':
-        _ = os.system('cls')
+    if os.name == "nt":
+        _ = os.system("cls")
     # For Mac and Linux (posix)
     else:
-        _ = os.system('clear')
+        _ = os.system("clear")
