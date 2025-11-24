@@ -3,7 +3,6 @@ from item import Item
 
 class Inventory:
     """Dictionary-based inventory system."""
-
     def __init__(self):
         self.items = {}
 

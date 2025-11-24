@@ -4,6 +4,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class Item:
     name: str
+    plural_name: str
     description: str
     value: int
     stackable: bool = True
