@@ -1,0 +1,84 @@
+HARVEST
+    trees - 1 log, 5 sticks
+    bush - 2 sticks
+    stones - stone
+    clay - clay
+    ore - ore
+CRAFT
+    log - 10 planks
+    stick - handle
+    clay - brick (FIRE)
+    rock - sharp rock
+    ore - metal
+    metal - nails
+    metal - toolhead
+
+TOOLS
+    Axe
+        handle + rock
+        handle metal
+
+Land & Field Maintenence
+    Clear rocks
+    Remove stumpps
+    Remove brush/debris
+    Mend ___
+    Till Soil
+    Check soil quality
+
+Crops:
+    Plant seeds
+    Add fertilizer
+    Water crops
+    Weeding
+    Harvest
+
+Animals
+
+Buildings:
+    Coops, Barns
+    Storage
+    Firepit
+    Kiln
+    Root Cellar
+
+
+Improvements
+    Water catchment
+    Build Fences
+    Press Juice/Cider
+    Drying Herbs
+
+Foraging
+    Forage Berries
+    Forage Herbs
+    Forage Mushrooms
+    Hunt small game
+    Fishing
+    Map/Scout Terrain
+
+Trading
+    Sell items
+    Buy seeds, tools, animals
+    Hire help
+
+
+FORAGE:
+    Forage Berries
+    Forage Herbs
+    Forage Mushrooms
+    Hunt small game
+    Fishing
+    Map/Scout Terrain
+
+LAND:
+    Clear rocks
+    Chop trees
+    Remove stumpps
+    Remove brush/debris
+    Mend ___
+    Till Soil
+    Check soil quality
+
+BUILD:
+    

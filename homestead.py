@@ -1,17 +1,20 @@
 from random import randint
 
+from game_time import GameTime
 from player import Player
 from task import Task
 from natural_resources import natural_resource_dict
 from utility import question
+from item_data import items
 
 
 class Homestead:
     def __init__(self):
         self.natural_resources = self.create_random_natural_resources()
         self.player = Player()
+        self.game_time = GameTime()
         self.structures = []
-        self.previous_message = "No previous task"
+        self.message = "No previous task"
 
     def game_loop(self):
         self.display()
@@ -24,8 +27,11 @@ class Homestead:
 
     def handle_task(self, task):
         task.function()
-        self.previous_message = task.message
-        self.duration = task.duration
+        self.message = task.message + f" - {task.duration} minutes"
+        self.game_time.advance(minutes=task.duration)
+
+    def give_item_to_player(self, item, count=1):
+        self.player.inventory.add_item(item, count)
 
     def create_random_natural_resources(self):
         resources = {}
@@ -39,19 +45,31 @@ class Homestead:
 
     def create_options_dict(self):
         options = {}
-        if self.player.has_at_least("Sticks", 2):
-            options.update({"Craft Fire": Task(self.craft_fire, "Craft Fire", 1)})
+        if self.player.inventory.has_item("Stick", 2):
+            options.update({"Craft Fire": Task(self.craft_fire, "Craft Fire", 30)})
         if self.natural_resources.get("trees", 0) > 0:
-            options.update({"Chop Trees": Task(self.chop_tree, "Chop Trees", 1)})
+            options.update(
+                {"Chop Trees": Task(self.chop_tree, "Chop Trees - gain 1 log", 60)}
+            )
         if self.natural_resources.get("bushes", 0) > 0:
-            options.update({"Chop Bushes": Task(self.chop_bush, "Chop Bushes", 1)})
+            options.update(
+                {"Chop Bushes": Task(self.chop_bush, "Chop Bushes - gain 2 sticks", 30)}
+            )
         if self.natural_resources.get("rocks", 0) > 0:
-            options.update({"Gather Rocks": Task(self.gather_rock, "Gather Rocks", 1)})
+            options.update(
+                {
+                    "Gather Rocks": Task(
+                        self.gather_rock, "Gather Rocks - gain 1 rock", 30
+                    )
+                }
+            )
         return options
 
     def display(self):
+        print("TIME:")
+        print(self.game_time)
         print("PREVIOUS TASK:")
-        print(f" - {self.previous_message}")
+        print(f" - {self.message}")
 
         print("NATURE:")
         for nat_resc in self.natural_resources:
@@ -59,7 +77,7 @@ class Homestead:
                 print(f" - {self.natural_resources[nat_resc]} {nat_resc}")
 
         print("INVENTORY:")
-        self.player.display_inventory()
+        print(self.player.inventory)
 
         print("STRUCTURES:")
         for struct in self.structures:
@@ -68,23 +86,21 @@ class Homestead:
         print("\n\n")
 
     def craft_fire(self):
-        self.player.remove_from_inventory("Sticks", 2)
+        self.player.inventory.remove_item("Stick", 2)
         self.structures.append("Fire")
-        self.previous_message = "A fire has been made"
 
     def chop_tree(self):
-        print("chop")
         self.natural_resources["trees"] -= 1
         self.natural_resources["stumps"] += 1
-        self.player.add_to_inventory("Log", 1)
-        self.previous_message = "A tree has been chopped"
+        self.give_item_to_player(items["Log"], 1)
+        # self.player.add_to_inventory("Log", 1)
 
     def chop_bush(self):
         self.natural_resources["bushes"] -= 1
-        self.player.add_to_inventory("Sticks", 2)
-        self.previous_message = "A bush has been chopped"
+        # self.player.add_to_inventory("Sticks", 2)
+        self.give_item_to_player(items["Stick"], 2)
 
     def gather_rock(self):
         self.natural_resources["rocks"] -= 1
-        self.player.add_to_inventory("Rock(s)", 1)
-        self.previous_message = "A rock has been gathered"
+        # self.player.add_to_inventory("Rock(s)", 1)
+        self.give_item_to_player(items["Rock"], 2)
