@@ -12,6 +12,11 @@ tasks = {
         message="Gather Rocks",
         duration=60,
         items=[(1, items["Rock"])],
-        resources=[(-1, "rock"), (1, "stump")],
+        resources=[(-1, "rock")],
+    ),
+    "Nap Rocks": Task(
+        message="Nap Rocks",
+        duration=60,
+        items=[(-1, items["Rock"]), (2, items["Rock Shard"])],
     ),
 }

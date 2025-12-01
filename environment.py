@@ -10,6 +10,12 @@ class Environment:
             nat_resources = self.generate_natural_resources()
         self.natural_resources = nat_resources
 
+    def has(self, resource_name, count=1):
+        return (
+            resource_name in self.natural_resources
+            and self.natural_resources[resource_name].count >= count
+        )
+
     def adjust_natural_resource_amount(self, resource, amount):
         if self.natural_resources.get(resource, None):
             self.natural_resources[resource].count += amount

@@ -19,4 +19,10 @@ items = {
         description="A stone, found on your homestead.",
         value=1,
     ),
+    "Rock Shard": Item(
+        name="Rock Shard",
+        plural_name="Rock Shards",
+        description="A stone shard, can be used as a tool.",
+        value=2,
+    ),
 }

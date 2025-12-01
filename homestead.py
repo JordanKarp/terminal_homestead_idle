@@ -40,7 +40,7 @@ class Homestead:
                 if amount > 0:
                     self.player.inventory.add_item(item, amount)
                 else:
-                    self.player.inventory.remove_item(item, amount * -1)
+                    self.player.inventory.remove_item(item.name, -1 * amount)
         if task.resources:
             for amount, resource in task.resources:
                 self.environment.adjust_natural_resource_amount(resource, amount)
@@ -48,7 +48,13 @@ class Homestead:
     def create_options(self):
         options = {}
         for task_name, task in tasks.items():
-            options[task_name] = task
+            for count, item in task.items:
+                # ! FIX NOT WORKING
+                if count < 0 and self.player.inventory.has_item(item, 1):
+                    options[task_name] = task
+            for count, resource in task.resources:
+                if count < 0 and self.environment.has(resource, count * -1):
+                    options[task_name] = task
         return options
 
     def create_options_dict(self):
