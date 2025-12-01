@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from collections.abc import Callable
 
@@ -9,11 +9,9 @@ def do_nothing():
 
 @dataclass(frozen=True)
 class Task:
-    # function: Callable = do_nothing
     message: str = "Task Mesasge"
     duration: int = 1
-    add_items: list = []
-    remove_items: list = []
-    add_resources: list = []
-    remove_resources: list = []
-    create_structure: list = []
+    requirements: list = field(default_factory=list)
+    items: list = field(default_factory=list)
+    resources: list = field(default_factory=list)
+    structures: list = field(default_factory=list)

@@ -3,6 +3,7 @@ from item import Item
 
 class Inventory:
     """Dictionary-based inventory system."""
+
     def __init__(self):
         self.items = {}
 
@@ -57,6 +58,11 @@ class Inventory:
     def __str__(self):
         if not self.items:
             return "[Empty Inventory]"
-        return "\n".join(
-            [f"{name}: {data['count']}" for name, data in self.items.items()]
+        return "".join(
+            (
+                f"{data['count']:5d}x {name.title()}\n"
+                if data["count"] == 1
+                else f"{data['count']:5d}x {data['item'].plural_name}\n"
+            )
+            for name, data in self.items.items()
         )

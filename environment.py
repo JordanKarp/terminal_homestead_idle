@@ -1,7 +1,8 @@
 from random import randint
 
-from natural_resource_data import natural_resource_dict
+from natural_resource_data import natural_resources
 from natural_resource import NaturalResource
+
 
 class Environment:
     def __init__(self, nat_resources=None):
@@ -9,16 +10,28 @@ class Environment:
             nat_resources = self.generate_natural_resources()
         self.natural_resources = nat_resources
 
-    
+    def adjust_natural_resource_amount(self, resource, amount):
+        if self.natural_resources.get(resource, None):
+            self.natural_resources[resource].count += amount
+
     def generate_natural_resources(self):
         resources = {}
-        for resource_name, resource_data in natural_resource_dict.items():
-            min = resource_data.get("minimum", 0)
-            max = resource_data.get("maximum", 0)
+        for resource_name, resource_data in natural_resources.items():
+            minimum = resource_data.get("minimum", 0)
+            maximum = resource_data.get("maximum", 0)
             growth = resource_data.get("growth_rate", 0)
-            count = randint(min, max)
-            plural_name = resource_name.get("plural_name", resource_name)
-            description = resource_name.get("description", "No Description Found")
-            resource = NaturalResource(resource_name, plural_name,description, count, growth )
+            count = randint(minimum, maximum)
+            plural_name = resource_data.get("plural_name", resource_name)
+            description = resource_data.get("description", "No Description Found")
+            resource = NaturalResource(
+                resource_name, plural_name, description, count, growth
+            )
             resources[resource_name] = resource
         return resources
+
+    def __str__(self):
+        return "".join(
+            str(resource) + "\n"
+            for resource in self.natural_resources.values()
+            if resource.count
+        )

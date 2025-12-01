@@ -1,11 +1,16 @@
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass
 class NaturalResource:
     name: str
     plural_name: str
     description: str
-    minimum: int
-    maximum: int
-    groth_rate: float
+    count: int
+    growth_rate: float
+
+    def __repr__(self):
+        if self.count == 1:
+            return f"{self.count:5d}x {self.name.title()}"
+        else:
+            return f"{self.count:5d}x {self.plural_name.title()}"
