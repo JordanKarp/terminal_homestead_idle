@@ -39,7 +39,7 @@ tasks = {
         resources=[],
     ),
     "Cook Mushroom Stew": Task(
-        message="Cook Mushrooms",
+        message="Cook Mushroom Stew",
         duration=60,
         requirements=["Fire Pit"],
         items=[(-5, items["Mushroom"]), (1, items["Mushroom Stew"])],

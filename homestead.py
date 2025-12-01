@@ -1,13 +1,9 @@
-from random import randint
-
 from environment import Environment
 from game_time import GameTime
 from player import Player
 from task import Task
 from utility import question
-from natural_resource_data import natural_resources
 from task_data import tasks
-from item_data import items
 
 
 class Homestead:
@@ -48,12 +44,14 @@ class Homestead:
     def validate_options(self, task: Task):
         items_ok = all(
             self.player.inventory.has_item(item.name, count * -1)
-            for count, item in task.items if count < 0
+            for count, item in task.items
+            if count < 0
         )
-        
+
         resources_ok = all(
-            self.environment.has(resource, count *-1)
-            for count, resource in task.resources if count < 0
+            self.environment.has(resource, count * -1)
+            for count, resource in task.resources
+            if count < 0
         )
 
         requirements_ok = all(
@@ -61,16 +59,15 @@ class Homestead:
         )
 
         print(self.structures, task.requirements, requirements_ok)
-        
+
         return items_ok and resources_ok and requirements_ok
 
     def create_options(self):
-        options = {}
-        for task_name, task in tasks.items():
-            
-            if self.validate_options(task):
-                options[task_name]=task
-        return options
+        return {
+            task_name: task
+            for task_name, task in tasks.items()
+            if self.validate_options(task)
+        }
 
     def display(self):
         print("TIME:")
