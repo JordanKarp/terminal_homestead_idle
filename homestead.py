@@ -50,7 +50,9 @@ class Homestead:
         for task_name, task in tasks.items():
             for count, item in task.items:
                 # ! FIX NOT WORKING
-                if count < 0 and self.player.inventory.has_item(item, 1):
+                print(item.name)
+                if count < 0 and self.player.inventory.has_item(item.name, count * -1):
+
                     options[task_name] = task
             for count, resource in task.resources:
                 if count < 0 and self.environment.has(resource, count * -1):
