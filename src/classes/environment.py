@@ -1,7 +1,7 @@
 from random import randint
 
-from natural_resource_data import natural_resources
-from natural_resource import NaturalResource
+from src.data.natural_resource_data import natural_resources
+from src.classes.natural_resource import NaturalResource
 
 
 class Environment:

@@ -1,5 +1,5 @@
-from task import Task
-from item_data import items
+from src.classes.task import Task
+from src.data.item_data import items
 
 tasks = {
     "Chop Tree": Task(

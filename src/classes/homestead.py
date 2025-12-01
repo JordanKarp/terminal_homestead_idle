@@ -1,9 +1,9 @@
-from environment import Environment
-from game_time import GameTime
-from player import Player
-from task import Task
-from utility import question
-from task_data import tasks
+from src.classes.environment import Environment
+from src.classes.game_time import GameTime
+from src.classes.player import Player
+from src.classes.task import Task
+from src.utility import question
+from src.data.task_data import tasks
 
 
 class Homestead:
@@ -16,7 +16,6 @@ class Homestead:
 
     def game_loop(self):
         self.display()
-        # options = self.create_options_dict()
         options = self.create_options()
         task = question("What do you want to do?", options)
         if not task:
@@ -41,6 +40,8 @@ class Homestead:
             for amount, resource in task.resources:
                 self.environment.adjust_natural_resource_amount(resource, amount)
 
+        self.game_time.advance(minutes=task.duration)
+
     def validate_options(self, task: Task):
         items_ok = all(
             self.player.inventory.has_item(item.name, count * -1)
@@ -57,8 +58,6 @@ class Homestead:
         requirements_ok = all(
             structure in self.structures for structure in task.requirements
         )
-
-        print(self.structures, task.requirements, requirements_ok)
 
         return items_ok and resources_ok and requirements_ok
 

@@ -1,4 +1,4 @@
-from item import Item
+from src.classes.item import Item
 
 items = {
     "Log": Item(
