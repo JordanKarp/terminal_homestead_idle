@@ -27,4 +27,11 @@ natural_resources = {
         "maximum": 0,
         "growth_rate": 0,
     },
+    "mushroom": {
+        "plural_name": "mushrooms",
+        "description": "This is the description for a mushroom",
+        "minimum": 3,
+        "maximum": 30,
+        "growth_rate": 0,
+    },
 }

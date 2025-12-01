@@ -31,9 +31,9 @@ class Homestead:
     def handle_task(self, task: Task):
         self.message = f"{task.message} - {task.duration} minutes"
 
-        # TODO
         if task.structures:
-            ...
+            for structure in task.structures:
+                self.structures.append(structure)
 
         if task.items:
             for amount, item in task.items:
@@ -45,32 +45,32 @@ class Homestead:
             for amount, resource in task.resources:
                 self.environment.adjust_natural_resource_amount(resource, amount)
 
+    def validate_options(self, task: Task):
+        items_ok = all(
+            self.player.inventory.has_item(item.name, count * -1)
+            for count, item in task.items if count < 0
+        )
+        
+        resources_ok = all(
+            self.environment.has(resource, count *-1)
+            for count, resource in task.resources if count < 0
+        )
+
+        requirements_ok = all(
+            structure in self.structures for structure in task.requirements
+        )
+
+        print(self.structures, task.requirements, requirements_ok)
+        
+        return items_ok and resources_ok and requirements_ok
+
     def create_options(self):
         options = {}
         for task_name, task in tasks.items():
-            for count, item in task.items:
-                if count < 0 and self.player.inventory.has_item(item.name, count * -1):
-                    options[task_name] = task
-            for count, resource in task.resources:
-                if count < 0 and self.environment.has(resource, count * -1):
-                    options[task_name] = task
+            
+            if self.validate_options(task):
+                options[task_name]=task
         return options
-
-    # def create_options_dict(self):
-    #     options = {}
-    #     if self.player.inventory.has_item("Stick", 2):
-    #         options["Craft Fire"] = Task(self.craft_fire, "Craft Fire", 30)
-    #     if self.natural_resources.get("trees", 0) > 0:
-    #         options["Chop Trees"] = Task(self.chop_tree, "Chop Trees - gain 1 log", 60)
-    #     if self.natural_resources.get("bushes", 0) > 0:
-    #         options["Chop Bushes"] = Task(
-    #             self.chop_bush, "Chop Bushes - gain 2 sticks", 30
-    #         )
-    #     if self.natural_resources.get("rocks", 0) > 0:
-    #         options["Gather Rocks"] = Task(
-    #             self.gather_rock, "Gather Rocks - gain 1 rock", 30
-    #         )
-    #     return options
 
     def display(self):
         print("TIME:")

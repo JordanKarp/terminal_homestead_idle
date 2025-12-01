@@ -25,4 +25,16 @@ items = {
         description="A stone shard, can be used as a tool.",
         value=2,
     ),
+    "Mushroom": Item(
+        name="Mushroom",
+        plural_name="Mushrooms",
+        description="A mushroom, which can be eaten.",
+        value=2,
+    ),
+    "Mushroom Stew": Item(
+        name="Mushroom Stew",
+        plural_name="Mushroom Stews",
+        description="A mushroom stews, which can be eaten.",
+        value=20,
+    ),
 }

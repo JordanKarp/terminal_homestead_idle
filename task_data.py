@@ -8,6 +8,12 @@ tasks = {
         items=[(2, items["Log"])],
         resources=[(-1, "tree"), (1, "stump")],
     ),
+    "Gather Mushrooms": Task(
+        message="Gather Mushrooms",
+        duration=60,
+        items=[(2, items["Mushroom"])],
+        resources=[(-2, "mushroom")],
+    ),
     "Remove Stump": Task(
         message="Remove Stump",
         duration=120,
@@ -24,5 +30,19 @@ tasks = {
         message="Nap Rocks",
         duration=60,
         items=[(-1, items["Rock"]), (2, items["Rock Shard"])],
+    ),
+    "Build Firepit": Task(
+        message="Build Firepit",
+        duration=60,
+        structures=["Fire Pit"],
+        items=[(-5, items["Rock"]), (-2, items["Log"])],
+        resources=[],
+    ),
+    "Cook Mushroom Stew": Task(
+        message="Cook Mushrooms",
+        duration=60,
+        requirements=["Fire Pit"],
+        items=[(-5, items["Mushroom"]), (1, items["Mushroom Stew"])],
+        resources=[],
     ),
 }
