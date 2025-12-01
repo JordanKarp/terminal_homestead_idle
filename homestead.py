@@ -49,31 +49,28 @@ class Homestead:
         options = {}
         for task_name, task in tasks.items():
             for count, item in task.items:
-                # ! FIX NOT WORKING
-                print(item.name)
                 if count < 0 and self.player.inventory.has_item(item.name, count * -1):
-
                     options[task_name] = task
             for count, resource in task.resources:
                 if count < 0 and self.environment.has(resource, count * -1):
                     options[task_name] = task
         return options
 
-    def create_options_dict(self):
-        options = {}
-        if self.player.inventory.has_item("Stick", 2):
-            options["Craft Fire"] = Task(self.craft_fire, "Craft Fire", 30)
-        if self.natural_resources.get("trees", 0) > 0:
-            options["Chop Trees"] = Task(self.chop_tree, "Chop Trees - gain 1 log", 60)
-        if self.natural_resources.get("bushes", 0) > 0:
-            options["Chop Bushes"] = Task(
-                self.chop_bush, "Chop Bushes - gain 2 sticks", 30
-            )
-        if self.natural_resources.get("rocks", 0) > 0:
-            options["Gather Rocks"] = Task(
-                self.gather_rock, "Gather Rocks - gain 1 rock", 30
-            )
-        return options
+    # def create_options_dict(self):
+    #     options = {}
+    #     if self.player.inventory.has_item("Stick", 2):
+    #         options["Craft Fire"] = Task(self.craft_fire, "Craft Fire", 30)
+    #     if self.natural_resources.get("trees", 0) > 0:
+    #         options["Chop Trees"] = Task(self.chop_tree, "Chop Trees - gain 1 log", 60)
+    #     if self.natural_resources.get("bushes", 0) > 0:
+    #         options["Chop Bushes"] = Task(
+    #             self.chop_bush, "Chop Bushes - gain 2 sticks", 30
+    #         )
+    #     if self.natural_resources.get("rocks", 0) > 0:
+    #         options["Gather Rocks"] = Task(
+    #             self.gather_rock, "Gather Rocks - gain 1 rock", 30
+    #         )
+    #     return options
 
     def display(self):
         print("TIME:")

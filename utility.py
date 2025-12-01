@@ -24,17 +24,7 @@ def get_number_in_range(prompt, max_val, min_val=1):
 
 
 def question(prompt, options: dict):
-    """
-    Asks a multiple-choice question where each option maps to a function.
-
-    Args:
-        prompt (str): The question to display.
-        options (dict[str, callable]): Keys are labels, values are functions.
-
-    Returns:
-        bool: True if an option function executed successfully, False if quit or error.
-    """
-
+  
     print(prompt)
 
     # Build the numbered menu
@@ -52,19 +42,10 @@ def question(prompt, options: dict):
         print("Quitting...")
         return False
 
-    # Run selected function
     selected_label = labeled_options[choice - 1]
     return options.get(selected_label)
 
-    # func = options.get(selected_label)
-
-    # try:
-    #     func()
-    #     return True
-    # except Exception as e:
-    #     print(f"Error calling function '{selected_label}': {e}")
-    #     return False
-
+    
 
 # Online Python - IDE, Editor, Compiler, Interpreter
 def clear_terminal():

@@ -8,6 +8,12 @@ tasks = {
         items=[(2, items["Log"])],
         resources=[(-1, "tree"), (1, "stump")],
     ),
+    "Remove Stump": Task(
+        message="Remove Stump",
+        duration=120,
+        items=[],
+        resources=[(-1, "stump")],
+    ),
     "Gather Rock": Task(
         message="Gather Rocks",
         duration=60,
