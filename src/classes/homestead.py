@@ -3,8 +3,9 @@ from src.classes.game_time import GameTime
 from src.classes.message_log import MessageLog
 from src.classes.player import Player
 from src.classes.task import Task
-from src.utility import question
+from src.utility.utility_functions import question
 from src.data.task_data import tasks
+from src.utility.color_text import color_text
 
 
 class Homestead:
@@ -75,8 +76,8 @@ class Homestead:
         print(self.message.show_most_recent)
         print()
 
-        print("NATURE:")
-        print(self.environment)
+        print(f"{color_text('NATURE', style='underline')}:")
+        print(color_text(self.environment, fg='red'))
 
         print("INVENTORY:")
         print(self.player.inventory)

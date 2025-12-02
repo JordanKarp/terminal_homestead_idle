@@ -1,5 +1,5 @@
 from src.classes.homestead import Homestead
-from src.utility import clear_terminal
+from src.utility.clear_terminal import clear_terminal
 
 hmstd = Homestead()
 run = True

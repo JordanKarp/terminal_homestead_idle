@@ -1,5 +1,16 @@
 import os
 
+def get_number_in_list(prompt, approved_list):
+    while True:
+        try:
+            number = int(input(prompt))
+            if number in approved_list:
+                return number
+            print(f"Error: Enter a valid choice.")
+        except ValueError:
+            print("Error: Invalid input. Please enter a valid number.")
+
+
 
 def get_number_in_range(prompt, max_val, min_val=1):
     """
@@ -46,12 +57,3 @@ def question(prompt, options: dict):
     return options.get(selected_label)
 
     
-
-# Online Python - IDE, Editor, Compiler, Interpreter
-def clear_terminal():
-    # For Windows
-    if os.name == "nt":
-        _ = os.system("cls")
-    # For Mac and Linux (posix)
-    else:
-        _ = os.system("clear")
