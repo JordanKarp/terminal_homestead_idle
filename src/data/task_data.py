@@ -2,7 +2,14 @@ from src.classes.task import Task
 from src.data.item_data import items
 
 tasks = {
+    ############## HARVESTING
     "Chop Tree": Task(
+        message="Chop Trees",
+        duration=60,
+        items=[(2, items["Log"])],
+        resources=[(-1, "tree"), (1, "stump")],
+    ),
+    "Gather Branches": Task(
         message="Chop Trees",
         duration=60,
         items=[(2, items["Log"])],
