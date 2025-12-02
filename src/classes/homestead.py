@@ -1,5 +1,6 @@
 from src.classes.environment import Environment
 from src.classes.game_time import GameTime
+from src.classes.message_log import MessageLog
 from src.classes.player import Player
 from src.classes.task import Task
 from src.utility import question
@@ -12,7 +13,7 @@ class Homestead:
         self.environment = Environment()
         self.game_time = GameTime()
         self.structures = []
-        self.message = "No previous task"
+        self.message = MessageLog()
 
     def game_loop(self):
         self.display()
@@ -24,7 +25,8 @@ class Homestead:
         return True
 
     def handle_task(self, task: Task):
-        self.message = f"{task.message} - {task.duration} minutes"
+        # self.message = f"{task.message} - {task.duration} minutes"
+        self.message.add_message(task.message, self.game_time.time, task.duration)
 
         if task.structures:
             for structure in task.structures:
@@ -69,10 +71,9 @@ class Homestead:
         }
 
     def display(self):
-        print("TIME:")
-        print(self.game_time)
-        print("PREVIOUS TASK:")
-        print(f" - {self.message}")
+        print("MESSAGE LOG:")
+        print(self.message.show_most_recent)
+        print()
 
         print("NATURE:")
         print(self.environment)
