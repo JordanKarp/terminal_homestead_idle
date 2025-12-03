@@ -15,6 +15,11 @@ class Homestead:
         self.game_time = GameTime()
         self.structures = []
         self.message = MessageLog()
+        self.show_all=True
+
+    def create_menu(self):
+        if not self.show_all:
+            options = self.create_options()
 
     def game_loop(self):
         self.display()
