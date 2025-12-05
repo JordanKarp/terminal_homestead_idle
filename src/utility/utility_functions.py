@@ -1,4 +1,5 @@
-import os
+from color_text import color_text
+
 
 def get_number_in_list(prompt, approved_list):
     while True:
@@ -10,6 +11,33 @@ def get_number_in_list(prompt, approved_list):
         except ValueError:
             print("Error: Invalid input. Please enter a valid number.")
 
+
+def ask_question(prompt, text_options_list, approved_options=None):
+    print(prompt)
+    if not approved_options:
+        approved_options = list(range(1, len(text_options_list) + 1))
+    for i, label in enumerate(text_options_list, start=1):
+        if i in approved_options:
+            print(f"{i}. {label}")
+        else:
+            print(color_text(f"{i}. {label}", "red"))
+
+    if quit:
+        quit_index = len(text_options_list) + 1
+        print(f"{quit_index}. Quit")
+        approved_options.append(quit_index)
+
+    choice = int(get_number_in_list("> ", approved_options))
+
+    # Quit
+    if choice == quit_index:
+        print("Quitting...")
+        return False
+
+    return text_options_list[choice - 1]
+
+
+print(ask_question("Whatsup?", ["NM", "nothing", "You?"]))
 
 
 def get_number_in_range(prompt, max_val, min_val=1):
@@ -35,7 +63,7 @@ def get_number_in_range(prompt, max_val, min_val=1):
 
 
 def question(prompt, options: dict):
-  
+
     print(prompt)
 
     # Build the numbered menu
@@ -55,5 +83,3 @@ def question(prompt, options: dict):
 
     selected_label = labeled_options[choice - 1]
     return options.get(selected_label)
-
-    
