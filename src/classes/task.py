@@ -12,6 +12,9 @@ class TaskCategories(Enum):
 
     def __str__(self):
         return self.name.replace("_", " ").title()
+    
+    def __repr__(self):
+        return self.name.replace("_", " ").title()
 
 
 @dataclass(frozen=True)

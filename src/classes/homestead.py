@@ -23,7 +23,7 @@ class Homestead:
 
     def get_tasks(self):
         if self.show_all:
-            return tasks.items()
+            return tasks
         else:
             return {
                 task_name: task
@@ -35,25 +35,38 @@ class Homestead:
         self.display()
         main_menu = {}
         tasks = self.get_tasks()
-        for task_name, task in tasks:
+        # print(tasks)
+        for task_name, task in tasks.items():
             if task.category not in main_menu:
-                main_menu[task.category] = {}
-            main_menu[task.category][task_name] = task
-        # for task_category, category_task_list in main_menu.items():
-        #     if self.show_all:
-        #         possible_nums =
-        #     else:
-        #         possible_nums = range(1, len(category_task_list) +1)
+                main_menu[str(task.category.name)] = {}
+            main_menu[str(task.category.name)][task_name] = task
 
-        response = ask_question("Where do you want to start", list(main_menu.keys()))
-        if response in main_menu:
-            choice = ask_question(
-                "What do you want to do now?", list(main_menu[response].keys())
-            )
-            if not task:
-                return False
-            self.handle_task(main_menu[response][choice])
-            return True
+        if self.show_all:
+            # category_text_list = [f"{key} ({len(main_menu[key])})" ]
+            # num_available =[main_menu[key][task_name] for key, task_name in main_menu.items()]
+            # print(num_available)
+            # for category in main_menu:
+            #     available_tasks = 0
+            #     for task_name in main_menu[category]:
+            #         print(main_menu[category][task_name])
+            #         if self.validate_options(main_menu[category][task_name]):
+            #             available_tasks +=1
+            
+            main_cat_list= [f"{key} ({sum(1 for task_name in main_menu[key] if self.validate_options(main_menu[key][task_name]))}/{len(main_menu[key].keys())})" for key, task_name in main_menu.items()]
+        else:
+            main_cat_list = list(main_menu.keys())
+        # print(len(main_menu[key]))
+        response = ask_question("Where do you want to start", main_cat_list)
+        if response:
+            menu_cat = (response.split(' (')[0].upper()).replace(' ','_')
+            if menu_cat in main_menu:
+                choice = ask_question(
+                    "What do you want to do now?", list(main_menu[menu_cat].keys())
+                )
+                if not task:
+                    return False
+                self.handle_task(main_menu[menu_cat][choice])
+                return True
 
     def game_loop(self):
         self.display()
