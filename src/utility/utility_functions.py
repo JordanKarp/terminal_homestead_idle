@@ -1,4 +1,4 @@
-from color_text import color_text
+from src.utility.color_text import color_text
 
 
 def get_number_in_list(prompt, approved_list):
@@ -12,7 +12,7 @@ def get_number_in_list(prompt, approved_list):
             print("Error: Invalid input. Please enter a valid number.")
 
 
-def ask_question(prompt, text_options_list, approved_options=None):
+def ask_question(prompt, text_options_list, approved_options=None, quit=True):
     print(prompt)
     if not approved_options:
         approved_options = list(range(1, len(text_options_list) + 1))
@@ -35,9 +35,6 @@ def ask_question(prompt, text_options_list, approved_options=None):
         return False
 
     return text_options_list[choice - 1]
-
-
-print(ask_question("Whatsup?", ["NM", "nothing", "You?"]))
 
 
 def get_number_in_range(prompt, max_val, min_val=1):

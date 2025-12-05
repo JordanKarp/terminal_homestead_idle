@@ -7,7 +7,7 @@ tasks = {
         message="Chop Trees",
         duration=60,
         category=TaskCategories.GATHERING,
-        items=[(2, items["Log"])],
+        items=[(2, items["Stick"])],
         resources=[(-1, "tree"), (1, "stump")],
     ),
     "Gather Mushrooms": Task(
@@ -24,10 +24,6 @@ tasks = {
         items=[(1, items["Rock"])],
         resources=[(-1, "rock")],
     ),
-
-
-
-
     ############## LAND MAINTENANCE
     "Chop Tree": Task(
         message="Chop Trees",
@@ -43,7 +39,6 @@ tasks = {
         items=[],
         resources=[(-1, "stump")],
     ),
-
     ############## REFINE MATERIALS
     "Nap Rocks": Task(
         message="Nap Rocks",
@@ -51,9 +46,6 @@ tasks = {
         category=TaskCategories.REFINE_MATERIALS,
         items=[(-1, items["Rock"]), (2, items["Rock Shard"])],
     ),
-
-
-
     ############## BUILD
     "Build Firepit": Task(
         message="Build Firepit",
@@ -63,8 +55,6 @@ tasks = {
         items=[(-5, items["Rock"]), (-2, items["Log"])],
         resources=[],
     ),
-
-
     ################ COOK
     "Cook Mushroom Stew": Task(
         message="Cook Mushroom Stew",

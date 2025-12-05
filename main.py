@@ -5,4 +5,5 @@ hmstd = Homestead()
 run = True
 while run:
     clear_terminal()
-    run = hmstd.game_loop()
+    run = hmstd.menu_loop()
+    # run = hmstd.game_loop()

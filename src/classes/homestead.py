@@ -3,7 +3,7 @@ from src.classes.game_time import GameTime
 from src.classes.message_log import MessageLog
 from src.classes.player import Player
 from src.classes.task import Task
-from src.utility.utility_functions import question
+from src.utility.utility_functions import question, ask_question
 from src.data.task_data import tasks
 from src.utility.color_text import color_text
 
@@ -15,11 +15,45 @@ class Homestead:
         self.game_time = GameTime()
         self.structures = []
         self.message = MessageLog()
-        self.show_all=True
+        self.show_all = True
 
     def create_menu(self):
         if not self.show_all:
             options = self.create_options()
+
+    def get_tasks(self):
+        if self.show_all:
+            return tasks.items()
+        else:
+            return {
+                task_name: task
+                for task_name, task in tasks.items()
+                if self.validate_options(task)
+            }
+
+    def menu_loop(self):
+        self.display()
+        main_menu = {}
+        tasks = self.get_tasks()
+        for task_name, task in tasks:
+            if task.category not in main_menu:
+                main_menu[task.category] = {}
+            main_menu[task.category][task_name] = task
+        # for task_category, category_task_list in main_menu.items():
+        #     if self.show_all:
+        #         possible_nums =
+        #     else:
+        #         possible_nums = range(1, len(category_task_list) +1)
+
+        response = ask_question("Where do you want to start", list(main_menu.keys()))
+        if response in main_menu:
+            choice = ask_question(
+                "What do you want to do now?", list(main_menu[response].keys())
+            )
+            if not task:
+                return False
+            self.handle_task(main_menu[response][choice])
+            return True
 
     def game_loop(self):
         self.display()
@@ -82,7 +116,7 @@ class Homestead:
         print()
 
         print(f"{color_text('NATURE', style='underline')}:")
-        print(color_text(self.environment, fg='red'))
+        print(color_text(self.environment, fg="red"))
 
         print("INVENTORY:")
         print(self.player.inventory)
