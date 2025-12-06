@@ -2,35 +2,52 @@ from src.classes.task import Task, TaskCategories
 from src.data.item_data import items
 
 tasks = {
-    ############## HARVESTING
-    "Gather Branches": Task(
-        message="Gather Branches",
-        duration=60,
+    # HARVESTING
+    "Gather Sticks": Task(
+        message="Gather Sticks",
+        duration=30,
         category=TaskCategories.GATHERING,
-        items=[(2, items["Stick"])],
+        items=[(5, items["Stick"])],
         resources=[],
     ),
     "Gather Mushrooms": Task(
         message="Gather Mushrooms",
-        duration=60,
+        duration=30,
         category=TaskCategories.GATHERING,
         items=[(2, items["Mushroom"])],
         resources=[(-2, "mushroom")],
     ),
-    "Gather Rock": Task(
-        message="Gather Rocks",
-        duration=60,
+    "Gather Berries": Task(
+        message="Gather Berries",
+        duration=20,
         category=TaskCategories.GATHERING,
-        items=[(1, items["Rock"])],
-        resources=[(-1, "rock")],
+        items=[(10, items["Berry"])],
+        resources=[(-1, "berry bush")],
     ),
-    ############## LAND MAINTENANCE
+    "Gather Rocks": Task(
+        message="Gather Rocks",
+        duration=30,
+        category=TaskCategories.GATHERING,
+        items=[(2, items["Rock"])],
+        resources=[(-2, "rock")],
+    ),
+    "Harvest Clay": Task(
+        message="Harvest Clay",
+        duration=30,
+        category=TaskCategories.GATHERING,
+        items=[(5, items["Clay"])],
+        resources=[(-2, "rock")],
+        requirements=["Shovel"],
+    ),
+    # IDEAS: Gather Reeds
+    # LAND MAINTENANCE
     "Chop Tree": Task(
         message="Chop Trees",
         duration=60,
         category=TaskCategories.LAND_MAINTENANCE,
         items=[(2, items["Log"])],
         resources=[(-1, "tree"), (1, "stump")],
+        requirements=["Axe"],
     ),
     "Remove Stump": Task(
         message="Remove Stump",
@@ -38,21 +55,60 @@ tasks = {
         category=TaskCategories.LAND_MAINTENANCE,
         items=[],
         resources=[(-1, "stump")],
+        requirements=["Axe", "Shovel"],
     ),
-    ############## REFINE MATERIALS
+    # REFINE MATERIALS
     "Nap Rocks": Task(
         message="Nap Rocks",
         duration=60,
         category=TaskCategories.REFINE_MATERIALS,
         items=[(-1, items["Rock"]), (2, items["Rock Shard"])],
     ),
-    ############## BUILD
+    "Whittle Handle": Task(
+        message="Whittle Handle",
+        duration=60,
+        category=TaskCategories.REFINE_MATERIALS,
+        items=[(-1, items["Stick"]), (1, items["Handle"])],
+    ),
+    "Make Brick": Task(
+        message="Shape Brick",
+        duration=30,
+        category=TaskCategories.REFINE_MATERIALS,
+        requirements=["Oven"],
+        items=[(-5, items["Clay"]), (1, items["Brick"])],
+        resources=[],
+    ),
+    # BUILD
     "Build Firepit": Task(
         message="Build Firepit",
         duration=60,
         category=TaskCategories.BUILD,
         structures=["Fire Pit"],
         items=[(-5, items["Rock"]), (-2, items["Log"])],
+        resources=[],
+    ),
+    "Build Shovel": Task(
+        message="Build Shovel",
+        duration=60,
+        category=TaskCategories.BUILD,
+        structures=["Shovel"],
+        items=[(-1, items["Handle"]), (-1, items["Rock Shard"])],
+        resources=[],
+    ),
+    "Build Axe": Task(
+        message="Build Axe",
+        duration=60,
+        category=TaskCategories.BUILD,
+        structures=["Axe"],
+        items=[(-1, items["Handle"]), (-1, items["Rock Shard"])],
+        resources=[],
+    ),
+    "Build Oven": Task(
+        message="Build Oven",
+        duration=120,
+        category=TaskCategories.BUILD,
+        structures=["Oven"],
+        items=[(-5, items["Rock"]), (-5, items["Clay"]), (-2, items["Log"])],
         resources=[],
     ),
     ################ COOK

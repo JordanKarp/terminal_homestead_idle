@@ -60,7 +60,7 @@ class Inventory:
 
     def __str__(self):
         if not self.items:
-            return "[Empty Inventory]"
+            return "\n"
         return "".join(
             (
                 f"{data['count']:5d}x {name.title()}\n"

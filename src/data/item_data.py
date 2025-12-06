@@ -29,12 +29,36 @@ items = {
         name="Mushroom",
         plural_name="Mushrooms",
         description="A mushroom, which can be eaten.",
+        value=5,
+    ),
+    "Berry": Item(
+        name="Berry",
+        plural_name="Berries",
+        description="Wild edible berries used for cooking or eating raw.",
         value=2,
     ),
     "Mushroom Stew": Item(
         name="Mushroom Stew",
         plural_name="Mushroom Stews",
         description="A mushroom stews, which can be eaten.",
-        value=20,
+        value=30,
+    ),
+    "Clay": Item(
+        name="Clay",
+        plural_name="Clay",
+        description="Soft earthen material used in crafting.",
+        value=2,
+    ),
+    "Brick": Item(
+        name="Brick",
+        plural_name="Bricks",
+        description="Builing materila made from clay.",
+        value=5,
+    ),
+    "Handle": Item(
+        name="Handle",
+        plural_name="Handles",
+        description="The holding portion of a tool.",
+        value=1,
     ),
 }

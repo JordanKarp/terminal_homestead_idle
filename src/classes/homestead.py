@@ -133,17 +133,17 @@ class Homestead:
         }
 
     def display(self):
-        print("MESSAGE LOG:")
+        print(f"{color_text('MESSAGE LOG', style='underline')}:")
         print(self.message.show_most_recent)
         print()
 
         print(f"{color_text('NATURE', style='underline')}:")
-        print(color_text(self.environment, fg="red"))
+        print(self.environment)
 
-        print("INVENTORY:")
+        print(f"{color_text('INVENTORY', style='underline')}:")
         print(self.player.inventory)
 
-        print("STRUCTURES:")
+        print(f"{color_text('STRUCTURES', style='underline')}:")
         for struct in self.structures:
             print(f" - {struct}")
 
