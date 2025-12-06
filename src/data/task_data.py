@@ -4,11 +4,11 @@ from src.data.item_data import items
 tasks = {
     ############## HARVESTING
     "Gather Branches": Task(
-        message="Chop Trees",
+        message="Gather Branches",
         duration=60,
         category=TaskCategories.GATHERING,
         items=[(2, items["Stick"])],
-        resources=[(-1, "tree"), (1, "stump")],
+        resources=[],
     ),
     "Gather Mushrooms": Task(
         message="Gather Mushrooms",

@@ -30,7 +30,7 @@ def ask_question(prompt, text_options_list, approved_options=None, quit=True):
     choice = int(get_number_in_list("> ", approved_options))
 
     # Quit
-    if choice == quit_index:
+    if quit and choice == quit_index:
         print("Quitting...")
         return False
 

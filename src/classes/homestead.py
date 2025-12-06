@@ -2,10 +2,10 @@ from src.classes.environment import Environment
 from src.classes.game_time import GameTime
 from src.classes.message_log import MessageLog
 from src.classes.player import Player
-from src.classes.task import Task
+from src.classes.task import Task, parse_category
 from src.utility.utility_functions import question, ask_question
 from src.data.task_data import tasks
-from src.utility.color_text import color_text
+from src.utility.color_text import color_text, strip_ansi
 
 
 class Homestead:
@@ -16,10 +16,6 @@ class Homestead:
         self.structures = []
         self.message = MessageLog()
         self.show_all = True
-
-    def create_menu(self):
-        if not self.show_all:
-            options = self.create_options()
 
     def get_tasks(self):
         if self.show_all:
@@ -38,34 +34,57 @@ class Homestead:
         # print(tasks)
         for task_name, task in tasks.items():
             if task.category not in main_menu:
-                main_menu[str(task.category.name)] = {}
-            main_menu[str(task.category.name)][task_name] = task
+                main_menu[task.category] = {}
+            main_menu[task.category][task_name] = task
 
         if self.show_all:
-            # category_text_list = [f"{key} ({len(main_menu[key])})" ]
-            # num_available =[main_menu[key][task_name] for key, task_name in main_menu.items()]
-            # print(num_available)
-            # for category in main_menu:
-            #     available_tasks = 0
-            #     for task_name in main_menu[category]:
-            #         print(main_menu[category][task_name])
-            #         if self.validate_options(main_menu[category][task_name]):
-            #             available_tasks +=1
-            
-            main_cat_list= [f"{key} ({sum(1 for task_name in main_menu[key] if self.validate_options(main_menu[key][task_name]))}/{len(main_menu[key].keys())})" for key, task_name in main_menu.items()]
+            # Category (available tasks / total tasks)
+            main_cat_list = [
+                f"{key} ({sum(bool(self.validate_options(main_menu[key][task_name])) for task_name in main_menu[key])}/{len(list(main_menu[key].keys()))})"
+                for key in main_menu
+            ]
         else:
-            main_cat_list = list(main_menu.keys())
-        # print(len(main_menu[key]))
-        response = ask_question("Where do you want to start", main_cat_list)
-        if response:
-            menu_cat = (response.split(' (')[0].upper()).replace(' ','_')
-            if menu_cat in main_menu:
-                choice = ask_question(
-                    "What do you want to do now?", list(main_menu[menu_cat].keys())
+            # Category (available tasks)
+            main_cat_list = [
+                f"{key} ({sum(bool(self.validate_options(main_menu[key][task_name])) for task_name in main_menu[key])})"
+                for key in main_menu
+            ]
+        if response := ask_question("Where do you want to start", main_cat_list):
+            response = response.split(" (")[0]
+            task_category = parse_category(response)
+            if task_category in main_menu:
+                if self.show_all:
+                    task_options = []
+                    approved_numbers = []
+                    counter = 1
+                    for task in list(main_menu[task_category].keys()):
+                        if self.validate_options(main_menu[task_category][task]):
+                            task_options.append(task)
+                            approved_numbers.append(counter)
+                        counter += 1
+
+                    # task_options = [
+                    #     (
+                    #         task
+                    #         if self.validate_options(main_menu[task_category][task])
+                    #         else color_text(task, style="strikethrough")
+                    #     )
+                    #     for task in list(main_menu[task_category].keys())
+                    # ]
+
+                else:
+                    task_options = list(main_menu[task_category].keys())
+                    approved_numbers = None
+                task_response = ask_question(
+                    f"What type of {response.lower()}?",
+                    task_options,
+                    approved_options=approved_numbers,
+                    quit=True,
                 )
-                if not task:
+                if not task_response:
                     return False
-                self.handle_task(main_menu[menu_cat][choice])
+                task_name = strip_ansi(task_response)
+                self.handle_task(main_menu[task_category][task_name])
                 return True
 
     def game_loop(self):

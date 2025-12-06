@@ -12,9 +12,15 @@ class TaskCategories(Enum):
 
     def __str__(self):
         return self.name.replace("_", " ").title()
-    
+
     def __repr__(self):
         return self.name.replace("_", " ").title()
+
+
+def parse_category(value: str) -> TaskCategories:
+    # Normalize string format to match enum names
+    normalized = value.strip().replace(" ", "_").upper()
+    return TaskCategories[normalized]
 
 
 @dataclass(frozen=True)

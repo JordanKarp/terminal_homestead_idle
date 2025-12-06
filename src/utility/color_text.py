@@ -1,3 +1,6 @@
+import re
+
+
 def color_text(text, fg=None, bg=None, style=None):
     """
     Returns ANSI-colored text without external libraries.
@@ -10,11 +13,22 @@ def color_text(text, fg=None, bg=None, style=None):
     """
 
     codes = {
-        "black": 30, "red": 31, "green": 32, "yellow": 33,
-        "blue": 34, "magenta": 35, "cyan": 36, "white": 37,
-        "bright_black": 90, "bright_red": 91, "bright_green": 92,
-        "bright_yellow": 93, "bright_blue": 94, "bright_magenta": 95,
-        "bright_cyan": 96, "bright_white": 97
+        "black": 30,
+        "red": 31,
+        "green": 32,
+        "yellow": 33,
+        "blue": 34,
+        "magenta": 35,
+        "cyan": 36,
+        "white": 37,
+        "bright_black": 90,
+        "bright_red": 91,
+        "bright_green": 92,
+        "bright_yellow": 93,
+        "bright_blue": 94,
+        "bright_magenta": 95,
+        "bright_cyan": 96,
+        "bright_white": 97,
     }
 
     bg_codes = {k: v + 10 for k, v in codes.items() if v < 90}  # background versions
@@ -24,7 +38,8 @@ def color_text(text, fg=None, bg=None, style=None):
         "dim": 2,
         "underline": 4,
         "blink": 5,
-        "reverse": 7
+        "reverse": 7,
+        "strikethrough": 9,
     }
 
     seq = []
@@ -42,3 +57,12 @@ def color_text(text, fg=None, bg=None, style=None):
         return f"\033[{';'.join(seq)}m{text}\033[0m"
     else:
         return text
+
+
+def strip_ansi(text):
+    """
+    Remove ANSI escape codes (color, style, cursor movement, etc.)
+    and return plain text.
+    """
+    ansi_escape = re.compile(r"\033\[[0-9;]*m")
+    return ansi_escape.sub("", text)
