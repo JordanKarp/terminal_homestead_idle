@@ -24,14 +24,13 @@ def ask_question(prompt, text_options_list, approved_options=None, quit=True):
 
     if quit:
         quit_index = len(text_options_list) + 1
-        print(f"{quit_index}. Quit")
+        print(f"{quit_index}. Back")
         approved_options.append(quit_index)
 
     choice = int(get_number_in_list("> ", approved_options))
 
     # Quit
     if quit and choice == quit_index:
-        print("Quitting...")
         return False
 
     return text_options_list[choice - 1]

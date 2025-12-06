@@ -15,7 +15,7 @@ class Homestead:
         self.game_time = GameTime()
         self.structures = []
         self.message = MessageLog()
-        self.show_all = True
+        self.show_all = False
 
     def get_tasks(self):
         if self.show_all:
@@ -31,7 +31,7 @@ class Homestead:
         self.display()
         main_menu = {}
         tasks = self.get_tasks()
-        # print(tasks)
+
         for task_name, task in tasks.items():
             if task.category not in main_menu:
                 main_menu[task.category] = {}
@@ -62,16 +62,6 @@ class Homestead:
                             task_options.append(task)
                             approved_numbers.append(counter)
                         counter += 1
-
-                    # task_options = [
-                    #     (
-                    #         task
-                    #         if self.validate_options(main_menu[task_category][task])
-                    #         else color_text(task, style="strikethrough")
-                    #     )
-                    #     for task in list(main_menu[task_category].keys())
-                    # ]
-
                 else:
                     task_options = list(main_menu[task_category].keys())
                     approved_numbers = None
@@ -82,7 +72,7 @@ class Homestead:
                     quit=True,
                 )
                 if not task_response:
-                    return False
+                    return True
                 task_name = strip_ansi(task_response)
                 self.handle_task(main_menu[task_category][task_name])
                 return True
