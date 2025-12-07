@@ -1,0 +1,15 @@
+{
+  "GATHERING": {
+    "2": [{ "bonus_type": "speed_multiplier", "amount": 0.95 }],
+    "3": [{ "bonus_type": "yield_multiplier", "amount": 0.1 }],
+    "4": [{ "bonus_type": "speed_multiplier", "amount": 0.9 }],
+    "5": [{ "bonus_type": "yield_multiplier", "amount": 0.2 }],
+    "6": [{ "bonus_type": "speed_multiplier", "amount": 0.85 }],
+    "7": [{ "bonus_type": "yield_multiplier", "amount": 0.3 }],
+    "8": [{ "bonus_type": "speed_multiplier", "amount": 0.8 }],
+    "9": [{ "bonus_type": "yield_multiplier", "amount": 0.4 }]
+  },
+  "COOKING": {
+    "3": [{ "bonus_type": "quality_boost", "amount": 0.1 }]
+  }
+}

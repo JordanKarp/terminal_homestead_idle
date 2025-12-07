@@ -1,0 +1,1 @@
+locations = ["Home", "General Store"]

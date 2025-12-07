@@ -6,6 +6,7 @@ tasks = {
     "Gather Sticks": Task(
         message="Gather Sticks",
         duration=30,
+        xp=1,
         category=TaskCategories.GATHERING,
         items=[(5, items["Stick"])],
         resources=[],
@@ -13,6 +14,7 @@ tasks = {
     "Gather Mushrooms": Task(
         message="Gather Mushrooms",
         duration=30,
+        xp=1,
         category=TaskCategories.GATHERING,
         items=[(2, items["Mushroom"])],
         resources=[(-2, "mushroom")],
@@ -20,6 +22,7 @@ tasks = {
     "Gather Berries": Task(
         message="Gather Berries",
         duration=20,
+        xp=1,
         category=TaskCategories.GATHERING,
         items=[(10, items["Berry"])],
         resources=[(-1, "berry bush")],
@@ -27,6 +30,7 @@ tasks = {
     "Gather Rocks": Task(
         message="Gather Rocks",
         duration=30,
+        xp=1,
         category=TaskCategories.GATHERING,
         items=[(2, items["Rock"])],
         resources=[(-2, "rock")],
@@ -34,6 +38,7 @@ tasks = {
     "Harvest Clay": Task(
         message="Harvest Clay",
         duration=30,
+        xp=2,
         category=TaskCategories.GATHERING,
         items=[(5, items["Clay"])],
         resources=[(-2, "rock")],
@@ -44,6 +49,7 @@ tasks = {
     "Chop Tree": Task(
         message="Chop Trees",
         duration=60,
+        xp=2,
         category=TaskCategories.LAND_MAINTENANCE,
         items=[(2, items["Log"])],
         resources=[(-1, "tree"), (1, "stump")],
@@ -52,6 +58,7 @@ tasks = {
     "Remove Stump": Task(
         message="Remove Stump",
         duration=120,
+        xp=2,
         category=TaskCategories.LAND_MAINTENANCE,
         items=[],
         resources=[(-1, "stump")],
@@ -61,18 +68,21 @@ tasks = {
     "Nap Rocks": Task(
         message="Nap Rocks",
         duration=60,
+        xp=2,
         category=TaskCategories.REFINE_MATERIALS,
         items=[(-1, items["Rock"]), (2, items["Rock Shard"])],
     ),
     "Whittle Handle": Task(
         message="Whittle Handle",
         duration=60,
+        xp=2,
         category=TaskCategories.REFINE_MATERIALS,
         items=[(-1, items["Stick"]), (1, items["Handle"])],
     ),
     "Make Brick": Task(
         message="Shape Brick",
         duration=30,
+        xp=2,
         category=TaskCategories.REFINE_MATERIALS,
         requirements=["Oven"],
         items=[(-5, items["Clay"]), (1, items["Brick"])],
@@ -82,6 +92,7 @@ tasks = {
     "Build Firepit": Task(
         message="Build Firepit",
         duration=60,
+        xp=3,
         category=TaskCategories.BUILD,
         structures=["Fire Pit"],
         items=[(-5, items["Rock"]), (-2, items["Log"])],
@@ -90,6 +101,7 @@ tasks = {
     "Build Shovel": Task(
         message="Build Shovel",
         duration=60,
+        xp=3,
         category=TaskCategories.BUILD,
         structures=["Shovel"],
         items=[(-1, items["Handle"]), (-1, items["Rock Shard"])],
@@ -98,6 +110,7 @@ tasks = {
     "Build Axe": Task(
         message="Build Axe",
         duration=60,
+        xp=3,
         category=TaskCategories.BUILD,
         structures=["Axe"],
         items=[(-1, items["Handle"]), (-1, items["Rock Shard"])],
@@ -106,6 +119,7 @@ tasks = {
     "Build Oven": Task(
         message="Build Oven",
         duration=120,
+        xp=3,
         category=TaskCategories.BUILD,
         structures=["Oven"],
         items=[(-5, items["Rock"]), (-5, items["Clay"]), (-2, items["Log"])],
@@ -115,6 +129,7 @@ tasks = {
     "Cook Mushroom Stew": Task(
         message="Cook Mushroom Stew",
         duration=60,
+        xp=2,
         category=TaskCategories.COOK,
         requirements=["Fire Pit"],
         items=[(-5, items["Mushroom"]), (1, items["Mushroom Stew"])],

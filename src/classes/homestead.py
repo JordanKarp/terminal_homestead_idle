@@ -3,19 +3,19 @@ from src.classes.game_time import GameTime
 from src.classes.message_log import MessageLog
 from src.classes.player import Player
 from src.classes.task import Task, parse_category
-from src.utility.utility_functions import question, ask_question
+from src.utility.utility_functions import ask_question
 from src.data.task_data import tasks
 from src.utility.color_text import color_text, strip_ansi
 
 
 class Homestead:
-    def __init__(self):
+    def __init__(self, show_all=False):
         self.player = Player()
         self.environment = Environment()
         self.game_time = GameTime()
         self.structures = []
         self.message = MessageLog()
-        self.show_all = False
+        self.show_all = show_all
 
     def get_tasks(self):
         if self.show_all:
@@ -27,44 +27,58 @@ class Homestead:
                 if self.validate_options(task)
             }
 
-    def menu_loop(self):
-        self.display()
+    def create_main_menu(self, tasks):
         main_menu = {}
-        tasks = self.get_tasks()
-
         for task_name, task in tasks.items():
             if task.category not in main_menu:
                 main_menu[task.category] = {}
             main_menu[task.category][task_name] = task
+        return main_menu
+
+    def create_main_menu_text(self, main_menu):
+        """Return a list of category strings showing available (and optionally total) tasks per category."""
+
+        def available_count(tasks_dict):
+            return sum(
+                bool(self.validate_options(task)) for task in tasks_dict.values()
+            )
 
         if self.show_all:
-            # Category (available tasks / total tasks)
-            main_cat_list = [
-                f"{key} ({sum(bool(self.validate_options(main_menu[key][task_name])) for task_name in main_menu[key])}/{len(list(main_menu[key].keys()))})"
+            return [
+                f"{key} ({available_count(main_menu[key])}/{len(main_menu[key])})"
                 for key in main_menu
             ]
         else:
-            # Category (available tasks)
-            main_cat_list = [
-                f"{key} ({sum(bool(self.validate_options(main_menu[key][task_name])) for task_name in main_menu[key])})"
-                for key in main_menu
-            ]
-        if response := ask_question("Where do you want to start", main_cat_list):
+            return [f"{key} ({available_count(main_menu[key])})" for key in main_menu]
+
+    def create_sub_menu_text(self, main_menu, task_category):
+        if self.show_all:
+            task_options = []
+            approved_numbers = [0]
+            for counter, task in enumerate(
+                list(main_menu[task_category].keys()), start=1
+            ):
+                if self.validate_options(main_menu[task_category][task]):
+                    approved_numbers.append(counter)
+                task_options.append(task)
+        else:
+            task_options = list(main_menu[task_category].keys())
+            approved_numbers = None
+        return task_options, approved_numbers
+
+    def game_loop(self):
+        self.display()
+        tasks = self.get_tasks()
+        main_menu = self.create_main_menu(tasks)
+        main_category_list = self.create_main_menu_text(main_menu)
+
+        if response := ask_question("Where do you want to start", main_category_list):
             response = response.split(" (")[0]
             task_category = parse_category(response)
             if task_category in main_menu:
-                if self.show_all:
-                    task_options = []
-                    approved_numbers = []
-                    counter = 1
-                    for task in list(main_menu[task_category].keys()):
-                        if self.validate_options(main_menu[task_category][task]):
-                            task_options.append(task)
-                            approved_numbers.append(counter)
-                        counter += 1
-                else:
-                    task_options = list(main_menu[task_category].keys())
-                    approved_numbers = None
+                task_options, approved_numbers = self.create_sub_menu_text(
+                    main_menu=main_menu, task_category=task_category
+                )
                 task_response = ask_question(
                     f"What type of {response.lower()}?",
                     task_options,
@@ -76,15 +90,6 @@ class Homestead:
                 task_name = strip_ansi(task_response)
                 self.handle_task(main_menu[task_category][task_name])
                 return True
-
-    def game_loop(self):
-        self.display()
-        options = self.create_options()
-        task = question("What do you want to do?", options)
-        if not task:
-            return False
-        self.handle_task(task)
-        return True
 
     def handle_task(self, task: Task):
         # self.message = f"{task.message} - {task.duration} minutes"
@@ -103,6 +108,9 @@ class Homestead:
         if task.resources:
             for amount, resource in task.resources:
                 self.environment.adjust_natural_resource_amount(resource, amount)
+
+        if task.xp:
+            self.player.experience.add_xp(task.category, task.xp)
 
         self.game_time.advance(minutes=task.duration)
 
@@ -135,6 +143,11 @@ class Homestead:
     def display(self):
         print(f"{color_text('MESSAGE LOG', style='underline')}:")
         print(self.message.show_most_recent)
+        print()
+
+        print(f"{color_text('PLAYER', style='underline')}:")
+        print(self.player.wallet)
+        print(self.player.experience)
         print()
 
         print(f"{color_text('NATURE', style='underline')}:")
