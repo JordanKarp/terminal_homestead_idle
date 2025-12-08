@@ -65,6 +65,11 @@ class Homestead:
             task_options = list(main_menu[task_category].keys())
             approved_numbers = None
         return task_options, approved_numbers
+    
+    def parse_sub_menu_response(self,response):
+        response = response.split(" (")[0]
+        task_category = parse_category(response)
+        return response, task_category
 
     def game_loop(self):
         self.display()
@@ -73,8 +78,8 @@ class Homestead:
         main_category_list = self.create_main_menu_text(main_menu)
 
         if response := ask_question("Where do you want to start", main_category_list):
-            response = response.split(" (")[0]
-            task_category = parse_category(response)
+            response, task_category = self.parse_sub_menu_response(response)
+
             if task_category in main_menu:
                 task_options, approved_numbers = self.create_sub_menu_text(
                     main_menu=main_menu, task_category=task_category
@@ -87,9 +92,18 @@ class Homestead:
                 )
                 if not task_response:
                     return True
-                task_name = strip_ansi(task_response)
-                self.handle_task(main_menu[task_category][task_name])
-                return True
+                
+                return self.hande_task_response(task_response, main_menu, task_category)
+            
+    def hande_task_response(self, task_response, main_menu, task_category):
+        task_name = strip_ansi(task_response)
+        task = main_menu[task_category][task_name]
+        print
+        if isinstance(task, Task):
+            self.handle_task(task)
+            return True
+        else:
+            ...
 
     def handle_task(self, task: Task):
         # self.message = f"{task.message} - {task.duration} minutes"
@@ -132,13 +146,6 @@ class Homestead:
         )
 
         return items_ok and resources_ok and requirements_ok
-
-    def create_options(self):
-        return {
-            task_name: task
-            for task_name, task in tasks.items()
-            if self.validate_options(task)
-        }
 
     def display(self):
         print(f"{color_text('MESSAGE LOG', style='underline')}:")
