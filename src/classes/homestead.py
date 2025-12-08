@@ -93,9 +93,9 @@ class Homestead:
                 if not task_response:
                     return True
                 
-                return self.hande_task_response(task_response, main_menu, task_category)
+                return self.hande_sub_menu_response(task_response, main_menu, task_category)
             
-    def hande_task_response(self, task_response, main_menu, task_category):
+    def hande_sub_menu_response(self, task_response, main_menu, task_category):
         task_name = strip_ansi(task_response)
         task = main_menu[task_category][task_name]
         print
