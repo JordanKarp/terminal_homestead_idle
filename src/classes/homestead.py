@@ -9,10 +9,10 @@ from src.utility.color_text import color_text, strip_ansi
 
 
 class Homestead:
-    def __init__(self, show_all=False):
-        self.player = Player()
-        self.environment = Environment()
-        self.game_time = GameTime()
+    def __init__(self, player, environment, game_time, show_all=False):
+        self.player = player
+        self.environment = environment
+        self.game_time = game_time
         self.structures = []
         self.message = MessageLog()
         self.show_all = show_all

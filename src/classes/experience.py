@@ -45,10 +45,11 @@ class Experience:
     def __repr__(self):
         parts = []
         for category, xp in self.xp.items():
-            level = xp // 100 + 1
-            parts.append(f"{category.title()}:({level}) XP={xp}")
+            level = self.get_level(category)
+            category_name = category.title().replace("_", " ")
+            parts.append(f"{category_name.ljust(16)} ({level}): {xp}")
 
-        return f"Experience({'; '.join(parts)}"
+        return "\n".join(parts)
 
 
 def load_bonus_tables_from_file(filename="skill_bonuses.json"):

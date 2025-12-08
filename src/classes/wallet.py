@@ -33,4 +33,4 @@ class Wallet:
         print(transaction_log)
 
     def __repr__(self):
-        return f"Wallet(balance={self.balance})"
+        return f"Wallet            $ {self.balance}"
