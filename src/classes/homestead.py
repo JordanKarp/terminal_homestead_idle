@@ -1,7 +1,6 @@
-from src.classes.environment import Environment
-from src.classes.game_time import GameTime
+import pickle
+
 from src.classes.message_log import MessageLog
-from src.classes.player import Player
 from src.classes.task import Task, parse_category
 from src.utility.utility_functions import ask_question
 from src.data.task_data import tasks
@@ -65,8 +64,8 @@ class Homestead:
             task_options = list(main_menu[task_category].keys())
             approved_numbers = None
         return task_options, approved_numbers
-    
-    def parse_sub_menu_response(self,response):
+
+    def parse_sub_menu_response(self, response):
         response = response.split(" (")[0]
         task_category = parse_category(response)
         return response, task_category
@@ -84,17 +83,19 @@ class Homestead:
                 task_options, approved_numbers = self.create_sub_menu_text(
                     main_menu=main_menu, task_category=task_category
                 )
-                task_response = ask_question(
+                if task_response := ask_question(
                     f"What type of {response.lower()}?",
                     task_options,
                     approved_options=approved_numbers,
                     quit=True,
-                )
-                if not task_response:
+                ):
+                    return self.hande_sub_menu_response(
+                        task_response, main_menu, task_category
+                    )
+                else:
+                    # So that quit is back and not quit
                     return True
-                
-                return self.hande_sub_menu_response(task_response, main_menu, task_category)
-            
+
     def hande_sub_menu_response(self, task_response, main_menu, task_category):
         task_name = strip_ansi(task_response)
         task = main_menu[task_category][task_name]
@@ -103,6 +104,7 @@ class Homestead:
             self.handle_task(task)
             return True
         else:
+            # TODO
             ...
 
     def handle_task(self, task: Task):
@@ -153,6 +155,7 @@ class Homestead:
         print()
 
         print(f"{color_text('PLAYER', style='underline')}:")
+        print(self.player.profession)
         print(self.player.wallet)
         print(self.player.experience)
         print()
@@ -168,3 +171,8 @@ class Homestead:
             print(f" - {struct}")
 
         print("\n\n")
+
+    def save_game(self):
+        filename = self.player.name
+        with open(filename, "wb") as f:
+            pickle.dump(self, f)

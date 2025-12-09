@@ -13,7 +13,7 @@ def get_number_in_list(prompt, approved_list):
 
 
 def ask_question(prompt, text_options_list, approved_options=None, quit=True):
-    print(prompt)
+    print(color_text(prompt, style="underline"))
     if not approved_options:
         approved_options = list(range(1, len(text_options_list) + 1))
     for i, label in enumerate(text_options_list, start=1):

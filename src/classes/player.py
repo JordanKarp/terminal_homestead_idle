@@ -9,14 +9,23 @@ SKILL_DATA_PATH = "./src/data/skill_bonus_data.json"
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, name, profession):
+        self.name = name
         self.inventory = Inventory()
-        bonus_tables = load_bonus_tables_from_file(SKILL_DATA_PATH)
+        self.profession = profession
+        bonus_tables = self.apply_profession()
         self.experience = Experience(
             categories=TaskCategories, bonus_tables=bonus_tables
         )
-        self.wallet = Wallet()
+        self.wallet = Wallet(starting_amount=self.profession.starting_cash)
         self.location = "Home"
+
+    def apply_profession(self):
+        for item in self.profession.starting_items:
+            self.inventory.add_item(item)
+        bonus_tables = load_bonus_tables_from_file(SKILL_DATA_PATH)
+        # TODO add profession to bonus_tables
+        return bonus_tables
 
     def travel_to(self, location):
         if location not in locations:
