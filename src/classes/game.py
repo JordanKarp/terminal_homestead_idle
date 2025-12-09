@@ -6,10 +6,11 @@ from src.classes.game_time import GameTime
 from src.classes.environment import Environment
 
 from src.data.profession_data import professions
+from src.data.item_data import items
 
 from src.utility.clear_terminal import clear_terminal
 from src.utility.list_folder_items import list_folder_items
-from src.utility.utility_functions import ask_question
+from src.utility.utility_functions import ask_question, get_number
 
 MAIN_MENU_OPTIONS = ["New Game", "Load Game", "Settings", "Achievements"]
 GAME_TYPES = ["Normal", "Custom"]
@@ -55,15 +56,24 @@ class Game:
 
     def normal_game(self, name):
         show_all = True
-        profession = ask_question("Choose your profession: ", list(professions.keys()))
-        profession = professions[profession]
+        profession_name = ask_question("Choose your profession: ", list(professions.keys()))
+        profession = professions[profession_name]
         player = Player(name=name, profession=profession)
         environment = Environment()
         game_time = GameTime()
         return Homestead(player, environment, game_time, show_all)
 
     def custom_game(self, name):
-        pass
+        show_all = True
+        starting_cash = get_number("Starting Cash: ")
+        starting_items = [ask_question("Starting Items:", list(items))]
+        player = Player(name, profession='Customizer', starting_cash=int(starting_cash))
+        for item_name in starting_items:
+            player.inventory.add_item(items[item_name])
+
+        environment = Environment()
+        game_time = GameTime()
+        return Homestead(player, environment, game_time, show_all)
 
     def load_game(self):
         if files := list_folder_items(SAVE_FILE_PATH):

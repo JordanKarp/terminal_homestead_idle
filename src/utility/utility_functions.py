@@ -1,4 +1,11 @@
 from src.utility.color_text import color_text
+def get_number(prompt):
+    while True:
+        try:
+            num = int(input(prompt))
+            return num
+        except ValueError:
+            print("Error: Invalid input. Please enter a valid number.")
 
 
 def get_number_in_list(prompt, approved_list):
