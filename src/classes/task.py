@@ -8,6 +8,7 @@ class TaskCategories(Enum):
     REFINE_MATERIALS = auto()
     BUILD = auto()
     COOK = auto()
+    MENU = auto()
     OTHER = auto()
 
     def __str__(self):

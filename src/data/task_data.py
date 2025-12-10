@@ -1,6 +1,55 @@
 from src.classes.task import Task, TaskCategories
 from src.data.item_data import items
 
+
+menu_tasks = {
+    "View Message Log": Task(
+        message="View Message Log",
+        duration=0,
+        category=TaskCategories.MENU,
+    ),
+    "View Encyclopedia": Task(
+        message="View Encyclopedia",
+        duration=0,
+        category=TaskCategories.MENU,
+    ),
+    "Settings": Task(
+        message="Settings",
+        duration=0,
+        category=TaskCategories.MENU,
+    ),
+    "Achievements": Task(
+        message="Achievements",
+        duration=0,
+        category=TaskCategories.MENU,
+    ),
+    "Save Game": Task(
+        message="Save Game",
+        duration=0,
+        category=TaskCategories.MENU,
+    ),
+}
+
+town_tasks= {
+    "Sell Items":Task(
+        message="Sell Items",
+        duration=30,
+        category=TaskCategories.OTHER,
+    ),
+    "Sell Structures":Task(
+        message="Sell Structures",
+        duration=30,
+        category=TaskCategories.OTHER,
+    ),
+        ################ COOK
+    "Travel back home": Task(
+        message="Travel back home",
+        duration=120,
+        xp=2,
+        category=TaskCategories.OTHER,
+    ),
+}
+
 tasks = {
     # HARVESTING
     "Gather Sticks": Task(
@@ -134,5 +183,12 @@ tasks = {
         requirements=["Fire Pit"],
         items=[(-5, items["Mushroom"]), (1, items["Mushroom Stew"])],
         resources=[],
+    ),
+    ################ COOK
+    "Travel to town": Task(
+        message="Travel to town",
+        duration=120,
+        xp=2,
+        category=TaskCategories.OTHER,
     ),
 }

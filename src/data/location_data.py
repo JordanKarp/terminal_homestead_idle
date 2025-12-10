@@ -1,1 +1,1 @@
-locations = ["Home", "General Store"]
+locations = ["Home", "Town"]

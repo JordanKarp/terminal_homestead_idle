@@ -78,7 +78,10 @@ class Game:
     def load_game(self):
         if files := list_folder_items(SAVE_FILE_PATH):
             response = ask_question("Which game?", files)
-            with open(response, "rb") as f:
-                return pickle.load(f)
+            with open(f"{SAVE_FILE_PATH}/{response}", "rb") as f:
+                item = pickle.load(f)
+                print(item)
+                return item
         else:
+            print(files)
             input("No save files found.")

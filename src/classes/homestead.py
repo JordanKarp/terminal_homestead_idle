@@ -3,8 +3,9 @@ import pickle
 from src.classes.message_log import MessageLog
 from src.classes.task import Task, parse_category
 from src.utility.utility_functions import ask_question
-from src.data.task_data import tasks
+from src.data.task_data import tasks, menu_tasks, town_tasks
 from src.utility.color_text import color_text, strip_ansi
+from src.utility.clear_terminal import clear_terminal
 
 
 class Homestead:
@@ -17,12 +18,17 @@ class Homestead:
         self.show_all = show_all
 
     def get_tasks(self):
+        if self.player.location == "Home":
+            combined_tasks = menu_tasks | tasks
+        elif self.player.location == "Town":
+            combined_tasks = menu_tasks | town_tasks
+
         if self.show_all:
-            return tasks
+            return combined_tasks
         else:
             return {
                 task_name: task
-                for task_name, task in tasks.items()
+                for task_name, task in combined_tasks.items()
                 if self.validate_options(task)
             }
 
@@ -130,6 +136,27 @@ class Homestead:
 
         self.game_time.advance(minutes=task.duration)
 
+        self.handle_function_tasks(task)
+
+    def handle_function_tasks(self, task):
+        if task.message == "Travel back home":
+            self.player.travel_to("Home")
+        elif task.message == "Travel to town":
+            self.player.travel_to("Town")
+        elif task.message == "View Message Log":
+            clear_terminal
+            self.message.show_log()
+            input("Press any key to proceed.")
+        elif task.message == "Settings":
+            # TODO Settings
+            ...
+        elif task.message == "Achievements":
+            # TODO Settings
+            ...
+        elif task.message == "Save Game":
+            self.save_game()
+
+
     def validate_options(self, task: Task):
         items_ok = all(
             self.player.inventory.has_item(item.name, count * -1)
@@ -173,6 +200,6 @@ class Homestead:
         print("\n\n")
 
     def save_game(self):
-        filename = self.player.name
+        filename = f"save_data/{self.player.name}.sav"
         with open(filename, "wb") as f:
             pickle.dump(self, f)

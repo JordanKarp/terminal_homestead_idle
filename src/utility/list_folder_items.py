@@ -1,7 +1,7 @@
 import os
 
 
-def list_folder_items(folder_path, extension=".pkl"):
+def list_folder_items(folder_path, extension=".sav"):
     """
     Returns a list of save file names (not full paths) in the folder.
     """
