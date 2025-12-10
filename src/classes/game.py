@@ -66,14 +66,18 @@ class Game:
     def custom_game(self, name):
         show_all = True
         starting_cash = get_number("Starting Cash: ")
-        starting_items = [ask_question("Starting Items:", list(items))]
         player = Player(name, profession='Customizer', starting_cash=int(starting_cash))
-        for item_name in starting_items:
-            player.inventory.add_item(items[item_name])
-
+        self.add_custom_items(player)
         environment = Environment()
         game_time = GameTime()
         return Homestead(player, environment, game_time, show_all)
+
+    def add_custom_items(self, player):
+        item_name = True
+        while item_name:
+            if item_name := ask_question("Pick starting item(s):", list(items)):
+                count = get_number("How many: ")
+                player.inventory.add_item(items[item_name], count)
 
     def load_game(self):
         if files := list_folder_items(SAVE_FILE_PATH):
