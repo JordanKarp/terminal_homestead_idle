@@ -2,6 +2,7 @@ from random import randint
 
 from src.data.natural_resource_data import natural_resources
 from src.classes.natural_resource import NaturalResource
+from src.utility.utility_functions import get_number
 
 
 class Environment:
@@ -34,6 +35,21 @@ class Environment:
             )
             resources[resource_name] = resource
         return resources
+
+    @staticmethod
+    def prompt_custom_resources():
+        resources = {}
+        for resource_name, resource_data in natural_resources.items():
+            plural_name = resource_data.get("plural_name", resource_name)
+            growth = resource_data.get("growth_rate", 0)
+            description = resource_data.get("description", "No Description Found")
+            number = get_number(f"How many {plural_name}: ")
+            resource = NaturalResource(
+                resource_name, plural_name, description, number, growth
+            )
+            resources[resource_name] = resource
+        return resources
+
 
     def __str__(self):
         return "".join(

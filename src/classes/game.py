@@ -9,6 +9,7 @@ from src.data.profession_data import professions
 from src.data.item_data import items
 
 from src.utility.clear_terminal import clear_terminal
+from src.utility.color_text import color_text
 from src.utility.list_folder_items import list_folder_items
 from src.utility.utility_functions import ask_question, get_number
 
@@ -68,10 +69,15 @@ class Game:
         starting_cash = get_number("Starting Cash: ")
         player = Player(name, profession='Customizer', starting_cash=int(starting_cash))
         self.add_custom_items(player)
-        environment = Environment()
+        environment = self.create_custom_environment()
         game_time = GameTime()
         return Homestead(player, environment, game_time, show_all)
 
+    def create_custom_environment(self):
+        print(color_text("Create Environment:", style='underline'))
+        resources = Environment().prompt_custom_resources()
+        return Environment(resources)
+    
     def add_custom_items(self, player):
         item_name = True
         while item_name:
