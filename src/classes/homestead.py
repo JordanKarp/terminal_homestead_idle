@@ -9,11 +9,11 @@ from src.utility.clear_terminal import clear_terminal
 
 
 class Homestead:
-    def __init__(self, player, environment, game_time, show_all=False):
+    def __init__(self, player, environment, structures, game_time, show_all=False):
         self.player = player
         self.environment = environment
         self.game_time = game_time
-        self.structures = []
+        self.structures = structures
         self.message = MessageLog()
         self.show_all = show_all
 
@@ -105,13 +105,12 @@ class Homestead:
     def hande_sub_menu_response(self, task_response, main_menu, task_category):
         task_name = strip_ansi(task_response)
         task = main_menu[task_category][task_name]
-        print
+
         if isinstance(task, Task):
             self.handle_task(task)
             return True
         else:
-            # TODO
-            ...
+            return False
 
     def handle_task(self, task: Task):
         # self.message = f"{task.message} - {task.duration} minutes"
@@ -156,7 +155,6 @@ class Homestead:
         elif task.message == "Save Game":
             self.save_game()
 
-
     def validate_options(self, task: Task):
         items_ok = all(
             self.player.inventory.has_item(item.name, count * -1)
@@ -195,7 +193,7 @@ class Homestead:
 
         print(f"{color_text('STRUCTURES', style='underline')}:")
         for struct in self.structures:
-            print(f" - {struct}")
+            print(f" - {struct.name}")
 
         print("\n\n")
 

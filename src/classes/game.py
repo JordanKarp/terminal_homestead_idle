@@ -7,6 +7,7 @@ from src.classes.environment import Environment
 
 from src.data.profession_data import professions
 from src.data.item_data import items
+from src.data.structure_data import structures
 
 from src.utility.clear_terminal import clear_terminal
 from src.utility.color_text import color_text
@@ -57,33 +58,47 @@ class Game:
 
     def normal_game(self, name):
         show_all = True
-        profession_name = ask_question("Choose your profession: ", list(professions.keys()))
+        profession_name = ask_question(
+            "Choose your profession: ", list(professions.keys())
+        )
         profession = professions[profession_name]
         player = Player(name=name, profession=profession)
+        structures = []
         environment = Environment()
         game_time = GameTime()
-        return Homestead(player, environment, game_time, show_all)
+        return Homestead(player, environment, structures, game_time, show_all)
 
     def custom_game(self, name):
         show_all = True
         starting_cash = get_number("Starting Cash: ")
-        player = Player(name, profession='Customizer', starting_cash=int(starting_cash))
+        player = Player(name, profession="Customizer", starting_cash=int(starting_cash))
         self.add_custom_items(player)
+        structures = self.add_custom_structures()
         environment = self.create_custom_environment()
         game_time = GameTime()
-        return Homestead(player, environment, game_time, show_all)
+        return Homestead(player, environment, structures, game_time, show_all)
 
     def create_custom_environment(self):
-        print(color_text("Create Environment:", style='underline'))
+        print(color_text("Create Environment:", style="underline"))
         resources = Environment().prompt_custom_resources()
         return Environment(resources)
-    
+
     def add_custom_items(self, player):
         item_name = True
         while item_name:
             if item_name := ask_question("Pick starting item(s):", list(items)):
                 count = get_number("How many: ")
                 player.inventory.add_item(items[item_name], count)
+
+    def add_custom_structures(self):
+        structures_to_add = []
+        structure_name = True
+        while structure_name:
+            if structure_name := ask_question(
+                "Pick starting structure(s):", list(structures)
+            ):
+                structures_to_add.append(structures[structure_name])
+        return structures_to_add
 
     def load_game(self):
         if files := list_folder_items(SAVE_FILE_PATH):

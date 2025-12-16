@@ -1,5 +1,6 @@
 from src.classes.task import Task, TaskCategories
 from src.data.item_data import items
+from src.data.structure_data import structures
 
 
 menu_tasks = {
@@ -30,18 +31,17 @@ menu_tasks = {
     ),
 }
 
-town_tasks= {
-    "Sell Items":Task(
+town_tasks = {
+    "Sell Items": Task(
         message="Sell Items",
         duration=30,
         category=TaskCategories.OTHER,
     ),
-    "Sell Structures":Task(
+    "Sell Structures": Task(
         message="Sell Structures",
         duration=30,
         category=TaskCategories.OTHER,
     ),
-        ################ COOK
     "Travel back home": Task(
         message="Travel back home",
         duration=120,
@@ -91,7 +91,7 @@ tasks = {
         category=TaskCategories.GATHERING,
         items=[(5, items["Clay"])],
         resources=[(-2, "rock")],
-        requirements=["Shovel"],
+        requirements=[structures["Stone Shovel"]],
     ),
     # IDEAS: Gather Reeds
     # LAND MAINTENANCE
@@ -102,7 +102,7 @@ tasks = {
         category=TaskCategories.LAND_MAINTENANCE,
         items=[(2, items["Log"])],
         resources=[(-1, "tree"), (1, "stump")],
-        requirements=["Axe"],
+        requirements=[structures["Stone Axe"]],
     ),
     "Remove Stump": Task(
         message="Remove Stump",
@@ -111,7 +111,7 @@ tasks = {
         category=TaskCategories.LAND_MAINTENANCE,
         items=[],
         resources=[(-1, "stump")],
-        requirements=["Axe", "Shovel"],
+        requirements=[structures["Stone Axe"], structures["Stone Shovel"]],
     ),
     # REFINE MATERIALS
     "Nap Rocks": Task(
@@ -133,7 +133,7 @@ tasks = {
         duration=30,
         xp=2,
         category=TaskCategories.REFINE_MATERIALS,
-        requirements=["Oven"],
+        requirements=[structures["Clay Oven"]],
         items=[(-5, items["Clay"]), (1, items["Brick"])],
         resources=[],
     ),
@@ -143,7 +143,7 @@ tasks = {
         duration=60,
         xp=3,
         category=TaskCategories.BUILD,
-        structures=["Fire Pit"],
+        structures=[structures["Fire Pit"]],
         items=[(-5, items["Rock"]), (-2, items["Log"])],
         resources=[],
     ),
@@ -152,16 +152,16 @@ tasks = {
         duration=60,
         xp=3,
         category=TaskCategories.BUILD,
-        structures=["Shovel"],
+        structures=[structures["Stone Shovel"]],
         items=[(-1, items["Handle"]), (-1, items["Rock Shard"])],
         resources=[],
     ),
-    "Build Axe": Task(
-        message="Build Axe",
+    "Build Stone Axe": Task(
+        message="Build Stone Axe",
         duration=60,
         xp=3,
         category=TaskCategories.BUILD,
-        structures=["Axe"],
+        structures=[structures["Stone Axe"]],
         items=[(-1, items["Handle"]), (-1, items["Rock Shard"])],
         resources=[],
     ),
@@ -170,21 +170,20 @@ tasks = {
         duration=120,
         xp=3,
         category=TaskCategories.BUILD,
-        structures=["Oven"],
+        structures=[structures["Clay Oven"]],
         items=[(-5, items["Rock"]), (-5, items["Clay"]), (-2, items["Log"])],
         resources=[],
     ),
-    ################ COOK
+    # COOK
     "Cook Mushroom Stew": Task(
         message="Cook Mushroom Stew",
         duration=60,
         xp=2,
         category=TaskCategories.COOK,
-        requirements=["Fire Pit"],
+        requirements=[structures["Fire Pit"]],
         items=[(-5, items["Mushroom"]), (1, items["Mushroom Stew"])],
         resources=[],
     ),
-    ################ COOK
     "Travel to town": Task(
         message="Travel to town",
         duration=120,
