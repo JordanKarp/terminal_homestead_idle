@@ -1,4 +1,5 @@
 import pickle
+from pathlib import Path
 
 from src.classes.message_log import MessageLog
 from src.classes.task import Task, parse_category
@@ -6,16 +7,19 @@ from src.utility.utility_functions import ask_question
 from src.data.task_data import tasks, menu_tasks, town_tasks
 from src.utility.color_text import color_text, strip_ansi
 from src.utility.clear_terminal import clear_terminal
+from src.utility.io import default_io
+from src.utility.io import default_io
 
 
 class Homestead:
-    def __init__(self, player, environment, structures, game_time, show_all=False):
+    def __init__(self, player, environment, structures, game_time, show_all=False, io=default_io):
         self.player = player
         self.environment = environment
         self.game_time = game_time
         self.structures = structures
         self.message = MessageLog()
         self.show_all = show_all
+        self.io = io
 
     def get_tasks(self):
         if self.player.location == "Home":
@@ -143,9 +147,21 @@ class Homestead:
         elif task.message == "Travel to town":
             self.player.travel_to("Town")
         elif task.message == "View Message Log":
-            clear_terminal
+            self.io.clear()
             self.message.show_log()
-            input("Press any key to proceed.")
+            self.io.input("Press any key to proceed.")
+        elif task.message == "Settings":
+            # Simple in-game settings hook: toggle showing all tasks for this homestead
+            options = ["Toggle show all tasks (view currently: {} )".format(self.show_all), "Back"]
+            if choice := ask_question("Settings", options, io=self.io):
+                if "Toggle show all tasks" in choice:
+                    self.show_all = not self.show_all
+                    self.io.print(f"Local show_all set to {self.show_all}")
+                    self.io.input("Press any key to continue.")
+        elif task.message == "Achievements":
+            # Simple placeholder: show that achievements are unimplemented
+            self.io.print("Achievements placeholder: no achievements tracked yet.")
+            self.io.input("Press any key to continue.")
         elif task.message == "Settings":
             # TODO Settings
             ...
@@ -175,29 +191,50 @@ class Homestead:
         return items_ok and resources_ok and requirements_ok
 
     def display(self):
-        print(f"{color_text('MESSAGE LOG', style='underline')}:")
-        print(self.message.show_most_recent)
-        print()
+        self.io.print(f"{color_text('MESSAGE LOG', style='underline')}:")
+        self.io.print(self.message.show_most_recent)
+        self.io.print()
 
-        print(f"{color_text('PLAYER', style='underline')}:")
-        print(self.player.profession)
-        print(self.player.wallet)
-        print(self.player.experience)
-        print()
+        default_io.print(f"{color_text('PLAYER', style='underline')}:")
+        default_io.print(self.player.profession)
+        default_io.print(self.player.wallet)
+        default_io.print(self.player.experience)
+        default_io.print()
 
-        print(f"{color_text('NATURE', style='underline')}:")
-        print(self.environment)
+        default_io.print(f"{color_text('NATURE', style='underline')}:")
+        default_io.print(self.environment)
 
-        print(f"{color_text('INVENTORY', style='underline')}:")
-        print(self.player.inventory)
+        default_io.print(f"{color_text('INVENTORY', style='underline')}:")
+        default_io.print(self.player.inventory)
 
-        print(f"{color_text('STRUCTURES', style='underline')}:")
+        self.io.print(f"{color_text('STRUCTURES', style='underline')}:")
         for struct in self.structures:
-            print(f" - {struct.name}")
+            if isinstance(struct, str):
+                self.io.print(struct)
+            else:
+                self.io.print(f" - {struct.name}")
 
-        print("\n\n")
+        self.io.print("\n\n")
 
     def save_game(self):
-        filename = f"save_data/{self.player.name}.sav"
-        with open(filename, "wb") as f:
-            pickle.dump(self, f)
+        save_dir = Path("save_data")
+        save_dir.mkdir(parents=True, exist_ok=True)
+        # sanitize filename by replacing path separators
+        safe_name = str(self.player.name).replace("/", "_").replace("\\", "_")
+        file_path = save_dir / f"{safe_name}.sav"
+
+        # If file exists, confirm overwrite
+        if file_path.exists():
+            if not ask_question(f"Overwrite existing save '{file_path.name}'?", ["Yes", "No"], io=self.io) == "Yes":
+                self.io.print("Save cancelled.")
+                self.io.input("Press any key to continue.")
+                return
+
+        try:
+            with open(file_path, "wb") as f:
+                pickle.dump(self, f)
+            self.io.print(f"Game saved to {file_path}")
+            self.io.input("Press any key to continue.")
+        except Exception as e:
+            self.io.print(f"Failed to save game: {e}")
+            self.io.input("Press any key to continue.")
