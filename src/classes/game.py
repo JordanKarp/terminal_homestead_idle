@@ -1,8 +1,10 @@
 import pickle
+import json
 from pathlib import Path
 from datetime import datetime
 
 from src.classes.homestead import Homestead
+from src.classes.settings import Settings
 from src.classes.player import Player
 from src.classes.game_time import GameTime
 from src.classes.environment import Environment
@@ -16,20 +18,23 @@ from src.utility.utility_functions import ask_question, get_number, get_non_empt
 from src.utility.io import default_io
 
 MAIN_MENU_OPTIONS = ["New Game", "Load Game", "Settings", "Achievements"]
+SETTING_OPTIONS = options = ["Toggle show all tasks"]
 GAME_TYPES = ["Normal", "Custom"]
 SAVE_FILE_PATH = Path("save_data")
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, settings: Settings = None):
         from src.utility.io import default_io
-
         # Simple settings storage (expandable)
-        self.settings = {
-            "show_all": True,
-            "achievements": [],
-        }
+        self.settings = settings or Settings()
         self.io = default_io
+        # Load persisted settings if present
+        try:
+            self.load_settings()
+        except Exception:
+            # If loading fails, keep defaults and report
+            self.io.print("Warning: failed to load settings, using defaults.")
 
     def run(self):
         # Main menu (loop so returning from submenus goes back to main menu)
@@ -52,18 +57,66 @@ class Game:
                 self.show_achievements_menu()
 
     def show_settings_menu(self):
-        options = ["Toggle show all tasks"]
         while True:
+            options = [
+                f"Toggle show all tasks (currently: {self.settings.show_all})",
+                f"Toggle autosave (currently: {self.settings.autosave})",
+                f"Set autosave interval (minutes) (currently: {self.settings.autosave_interval})",
+                "Save settings",
+            ]
+
             choice = ask_question("Settings", options, io=self.io)
             if not choice or choice == "Back":
                 return
-            if choice == "Toggle show all tasks":
-                self.settings["show_all"] = not self.settings.get("show_all", True)
-                self.io.print(f"Show all tasks set to {self.settings['show_all']}")
+            if choice.startswith("Toggle show all tasks"):
+                self.settings.show_all = not self.settings.show_all
+                self.io.print(f"Show all tasks set to {self.settings.show_all}")
+                self.io.input("Press any key to continue.")
+            elif choice.startswith("Toggle autosave"):
+                self.settings.autosave = not self.settings.autosave
+                self.io.print(f"Autosave set to {self.settings.autosave}")
+                self.io.input("Press any key to continue.")
+            elif choice.startswith("Set autosave interval"):
+                val = get_number("Autosave interval (minutes): ", io=self.io)
+                self.settings.autosave_interval = int(val)
+                self.io.print(f"Autosave interval set to {self.settings.autosave_interval} minutes")
+                self.io.input("Press any key to continue.")
+            elif choice == "Save settings":
+                self.save_settings()
+                self.io.print("Settings saved.")
                 self.io.input("Press any key to continue.")
 
+    def settings_path(self):
+        return SAVE_FILE_PATH / "settings.json"
+
+    def load_settings(self):
+        SAVE_FILE_PATH.mkdir(parents=True, exist_ok=True)
+        path = self.settings_path()
+        if not path.exists():
+            return False
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                # construct Settings from dict
+                self.settings = Settings.from_dict(data)
+            return True
+        except Exception as e:
+            self.io.print(f"Failed to load settings: {e}")
+            return False
+
+    def save_settings(self):
+        SAVE_FILE_PATH.mkdir(parents=True, exist_ok=True)
+        path = self.settings_path()
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(self.settings.to_dict(), f, indent=2)
+            return True
+        except Exception as e:
+            self.io.print(f"Failed to save settings: {e}")
+            return False
+
     def show_achievements_menu(self):
-        achievements = self.settings.get("achievements", [])
+        achievements = self.settings.achievements
         self.io.print("Achievements:")
         if not achievements:
             self.io.print("  No achievements yet.")
@@ -89,7 +142,7 @@ class Game:
             return False
 
     def normal_game(self, name):
-        show_all = self.settings.get("show_all", True)
+        show_all = self.settings.show_all
         profession_name = ask_question(
             "Choose your profession: ", list(professions.keys()), io=self.io
         )
@@ -98,17 +151,17 @@ class Game:
         structures = []
         environment = Environment()
         game_time = GameTime()
-        return Homestead(player, environment, structures, game_time, show_all, io=self.io)
+        return Homestead(player, environment, structures, game_time, show_all, io=self.io, game=self)
 
     def custom_game(self, name):
-        show_all = self.settings.get("show_all", True)
+        show_all = self.settings.show_all
         starting_cash = get_number("Starting Cash: ", io=self.io)
         player = Player(name, profession="Customizer", starting_cash=int(starting_cash))
         self.add_custom_items(player)
         structures = self.add_custom_structures()
         environment = self.create_custom_environment()
         game_time = GameTime()
-        return Homestead(player, environment, structures, game_time, show_all, io=self.io)
+        return Homestead(player, environment, structures, game_time, show_all, io=self.io, game=self)
 
     def create_custom_environment(self):
         self.io.print(color_text("Create Environment:", style="underline"))
@@ -163,6 +216,8 @@ class Game:
                     data = json.load(f)
                     # Reconstruct homestead from dict
                     homestead = Homestead.from_dict(data, io=self.io)
+                    # attach game reference so in-game settings persist
+                    homestead.game = self
                     self.io.print(homestead)
                     return homestead
             elif file_path.suffix == ".sav":

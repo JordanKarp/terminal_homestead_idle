@@ -11,7 +11,7 @@ from src.classes.game_time import GameTime
 from src.classes.natural_resource import NaturalResource
 from src.classes.message_log import Message
 
-from src.utility.utility_functions import ask_question
+from src.utility.utility_functions import ask_question, get_number
 from src.utility.color_text import color_text, strip_ansi
 from src.utility.io import default_io
 
@@ -23,7 +23,7 @@ from src.data.natural_resource_data import natural_resources as NATURAL_RESOURCE
 
 
 class Homestead:
-    def __init__(self, player, environment, structures, game_time, show_all=False, io=default_io):
+    def __init__(self, player, environment, structures, game_time, show_all=False, io=default_io, game=None):
         self.player = player
         self.environment = environment
         self.game_time = game_time
@@ -31,6 +31,9 @@ class Homestead:
         self.message = MessageLog()
         self.show_all = show_all
         self.io = io
+        # optional reference to owning Game instance so in-game settings can
+        # update and persist global settings
+        self.game = game
 
     def get_tasks(self):
         if self.player.location == "Home":
@@ -110,22 +113,26 @@ class Homestead:
                     approved_options=approved_numbers,
                     quit=True,
                 ):
-                    return self.hande_sub_menu_response(
+                    return self.handle_sub_menu_response(
                         task_response, main_menu, task_category
                     )
                 else:
                     # So that quit is back and not quit
                     return True
 
-    def hande_sub_menu_response(self, task_response, main_menu, task_category):
+    def handle_sub_menu_response(self, task_response, main_menu, task_category):
+        """Handle a selection from a sub-menu.
+
+        Returns True when a Task was handled and the game loop should continue,
+        otherwise False.
+        """
         task_name = strip_ansi(task_response)
         task = main_menu[task_category][task_name]
 
         if isinstance(task, Task):
             self.handle_task(task)
             return True
-        else:
-            return False
+        return False
 
     def handle_task(self, task: Task):
         # self.message = f"{task.message} - {task.duration} minutes"
@@ -167,13 +174,8 @@ class Homestead:
                 self.io.print("<no messages>")
             self.io.input("Press any key to proceed.")
         elif task.message == "Settings":
-            # Simple in-game settings hook: toggle showing all tasks for this homestead
-            options = ["Toggle show all tasks (view currently: {} )".format(self.show_all), "Back"]
-            if choice := ask_question("Settings", options, io=self.io):
-                if "Toggle show all tasks" in choice:
-                    self.show_all = not self.show_all
-                    self.io.print(f"Local show_all set to {self.show_all}")
-                    self.io.input("Press any key to continue.")
+            # Delegate to the dedicated settings handler for clarity/testing
+            self.show_in_game_settings()
         elif task.message == "Achievements":
             # Simple placeholder: show that achievements are unimplemented
             self.io.print("Achievements placeholder: no achievements tracked yet.")
@@ -199,6 +201,67 @@ class Homestead:
         )
 
         return items_ok and resources_ok and requirements_ok
+
+    def show_in_game_settings(self):
+        """Display and handle the in-game settings menu.
+
+        When the Homestead was created with a `game` reference, this menu
+        updates the central Settings object and persists changes via
+        `Game.save_settings()`. If no game is present, a minimal local-only
+        toggle is shown for backwards compatibility.
+        """
+        if getattr(self, "game", None) is not None:
+            g = self.game
+            options = [
+                f"Toggle show all tasks (currently: {g.settings.show_all})",
+                f"Toggle autosave (currently: {g.settings.autosave})",
+                f"Set autosave interval (minutes) (currently: {g.settings.autosave_interval})",
+                "Save settings",
+            ]
+            choice = ask_question("Settings", options, io=self.io)
+            if not choice:
+                return
+
+            if choice.startswith("Toggle show all tasks"):
+                g.settings.show_all = not g.settings.show_all
+                self.show_all = g.settings.show_all
+                try:
+                    g.save_settings()
+                except Exception:
+                    pass
+                self.io.print(f"Global show_all set to {self.show_all}")
+                self.io.input("Press any key to continue.")
+            elif choice.startswith("Toggle autosave"):
+                g.settings.autosave = not g.settings.autosave
+                try:
+                    g.save_settings()
+                except Exception:
+                    pass
+                self.io.print(f"Autosave set to {g.settings.autosave}")
+                self.io.input("Press any key to continue.")
+            elif choice.startswith("Set autosave interval"):
+                val = get_number("Autosave interval (minutes): ", io=self.io)
+                g.settings.autosave_interval = int(val)
+                try:
+                    g.save_settings()
+                except Exception:
+                    pass
+                self.io.print(f"Autosave interval set to {g.settings.autosave_interval} minutes")
+                self.io.input("Press any key to continue.")
+            elif choice == "Save settings":
+                try:
+                    g.save_settings()
+                    self.io.print("Settings saved.")
+                except Exception:
+                    self.io.print("Failed to save settings.")
+                self.io.input("Press any key to continue.")
+        else:
+            options = [f"Toggle show all tasks (view currently: {self.show_all} )", "Back"]
+            if choice := ask_question("Settings", options, io=self.io):
+                if "Toggle show all tasks" in choice:
+                    self.show_all = not self.show_all
+                    self.io.print(f"Local show_all set to {self.show_all}")
+                    self.io.input("Press any key to continue.")
 
     def display(self):
         self.io.print(f"{color_text('MESSAGE LOG', style='underline')}:")
