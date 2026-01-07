@@ -12,6 +12,20 @@ from src.classes.natural_resource import NaturalResource
 from src.classes.message_log import Message
 
 from src.utility.utility_functions import ask_question, get_number
+from src.constants import (
+    SETTINGS,
+    ACHIEVEMENTS,
+    SAVE_GAME,
+    VIEW_MESSAGE_LOG,
+    TRAVEL_BACK_HOME,
+    TRAVEL_TO_TOWN,
+    SAVE_SETTINGS,
+    PRESS_ANY_KEY,
+    BACK,
+    SETTINGS_SAVED_MSG,
+    SAVE_CANCELLED,
+    FAILED_SAVE_GAME,
+)
 from src.utility.color_text import color_text, strip_ansi
 from src.utility.io import default_io
 
@@ -160,11 +174,11 @@ class Homestead:
         self.handle_function_tasks(task)
 
     def handle_function_tasks(self, task):
-        if task.message == "Travel back home":
+        if task.message == TRAVEL_BACK_HOME:
             self.player.travel_to("Home")
-        elif task.message == "Travel to town":
+        elif task.message == TRAVEL_TO_TOWN:
             self.player.travel_to("Town")
-        elif task.message == "View Message Log":
+        elif task.message == VIEW_MESSAGE_LOG:
             self.io.clear()
             # show_log now returns a string; print it via IO
             log_text = self.message.show_log()
@@ -172,15 +186,15 @@ class Homestead:
                 self.io.print(log_text)
             else:
                 self.io.print("<no messages>")
-            self.io.input("Press any key to proceed.")
-        elif task.message == "Settings":
+            self.io.input(PRESS_ANY_KEY)
+        elif task.message == SETTINGS:
             # Delegate to the dedicated settings handler for clarity/testing
             self.show_in_game_settings()
-        elif task.message == "Achievements":
+        elif task.message == ACHIEVEMENTS:
             # Simple placeholder: show that achievements are unimplemented
             self.io.print("Achievements placeholder: no achievements tracked yet.")
-            self.io.input("Press any key to continue.")
-        elif task.message == "Save Game":
+            self.io.input(PRESS_ANY_KEY)
+        elif task.message == SAVE_GAME:
             self.save_game()
 
     def validate_options(self, task: Task):
@@ -216,7 +230,7 @@ class Homestead:
                 f"Toggle show all tasks (currently: {g.settings.show_all})",
                 f"Toggle autosave (currently: {g.settings.autosave})",
                 f"Set autosave interval (minutes) (currently: {g.settings.autosave_interval})",
-                "Save settings",
+                SAVE_SETTINGS,
             ]
             choice = ask_question("Settings", options, io=self.io)
             if not choice:
@@ -230,7 +244,7 @@ class Homestead:
                 except Exception:
                     pass
                 self.io.print(f"Global show_all set to {self.show_all}")
-                self.io.input("Press any key to continue.")
+                self.io.input(PRESS_ANY_KEY)
             elif choice.startswith("Toggle autosave"):
                 g.settings.autosave = not g.settings.autosave
                 try:
@@ -238,7 +252,7 @@ class Homestead:
                 except Exception:
                     pass
                 self.io.print(f"Autosave set to {g.settings.autosave}")
-                self.io.input("Press any key to continue.")
+                self.io.input(PRESS_ANY_KEY)
             elif choice.startswith("Set autosave interval"):
                 val = get_number("Autosave interval (minutes): ", io=self.io)
                 g.settings.autosave_interval = int(val)
@@ -247,21 +261,21 @@ class Homestead:
                 except Exception:
                     pass
                 self.io.print(f"Autosave interval set to {g.settings.autosave_interval} minutes")
-                self.io.input("Press any key to continue.")
-            elif choice == "Save settings":
+                self.io.input(PRESS_ANY_KEY)
+            elif choice == SAVE_SETTINGS:
                 try:
                     g.save_settings()
-                    self.io.print("Settings saved.")
+                    self.io.print(SETTINGS_SAVED_MSG)
                 except Exception:
                     self.io.print("Failed to save settings.")
-                self.io.input("Press any key to continue.")
+                self.io.input(PRESS_ANY_KEY)
         else:
-            options = [f"Toggle show all tasks (view currently: {self.show_all} )", "Back"]
+            options = [f"Toggle show all tasks (view currently: {self.show_all} )", BACK]
             if choice := ask_question("Settings", options, io=self.io):
                 if "Toggle show all tasks" in choice:
                     self.show_all = not self.show_all
                     self.io.print(f"Local show_all set to {self.show_all}")
-                    self.io.input("Press any key to continue.")
+                    self.io.input(PRESS_ANY_KEY)
 
     def display(self):
         self.io.print(f"{color_text('MESSAGE LOG', style='underline')}:")
@@ -299,18 +313,18 @@ class Homestead:
         # If file exists, confirm overwrite
         if file_path.exists():
             if not ask_question(f"Overwrite existing save '{file_path.name}'?", ["Yes", "No"], io=self.io) == "Yes":
-                self.io.print("Save cancelled.")
-                self.io.input("Press any key to continue.")
+                self.io.print(SAVE_CANCELLED)
+                self.io.input(PRESS_ANY_KEY)
                 return
 
         try:
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(self.to_dict(), f, indent=2)
             self.io.print(f"Game saved to {file_path}")
-            self.io.input("Press any key to continue.")
+            self.io.input(PRESS_ANY_KEY)
         except Exception as e:
-            self.io.print(f"Failed to save game: {e}")
-            self.io.input("Press any key to continue.")
+            self.io.print(f"{FAILED_SAVE_GAME}: {e}")
+            self.io.input(PRESS_ANY_KEY)
 
     def to_dict(self):
         """Serialize homestead to a JSON-safe dict."""

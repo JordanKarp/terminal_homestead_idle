@@ -1,11 +1,19 @@
 from src.classes.task import Task, TaskCategories
+from src.constants import (
+    VIEW_MESSAGE_LOG,
+    SETTINGS,
+    ACHIEVEMENTS,
+    SAVE_GAME,
+    TRAVEL_BACK_HOME,
+    TRAVEL_TO_TOWN,
+)
 from src.data.item_data import items
 from src.data.structure_data import structures
 
 
 menu_tasks = {
-    "View Message Log": Task(
-        message="View Message Log",
+    VIEW_MESSAGE_LOG: Task(
+        message=VIEW_MESSAGE_LOG,
         duration=0,
         category=TaskCategories.MENU,
     ),
@@ -14,18 +22,18 @@ menu_tasks = {
         duration=0,
         category=TaskCategories.MENU,
     ),
-    "Settings": Task(
-        message="Settings",
+    SETTINGS: Task(
+        message=SETTINGS,
         duration=0,
         category=TaskCategories.MENU,
     ),
-    "Achievements": Task(
-        message="Achievements",
+    ACHIEVEMENTS: Task(
+        message=ACHIEVEMENTS,
         duration=0,
         category=TaskCategories.MENU,
     ),
-    "Save Game": Task(
-        message="Save Game",
+    SAVE_GAME: Task(
+        message=SAVE_GAME,
         duration=0,
         category=TaskCategories.MENU,
     ),
@@ -42,8 +50,8 @@ town_tasks = {
         duration=30,
         category=TaskCategories.OTHER,
     ),
-    "Travel back home": Task(
-        message="Travel back home",
+    TRAVEL_BACK_HOME: Task(
+        message=TRAVEL_BACK_HOME,
         duration=120,
         xp=2,
         category=TaskCategories.OTHER,
@@ -184,8 +192,8 @@ tasks = {
         items=[(-5, items["Mushroom"]), (1, items["Mushroom Stew"])],
         resources=[],
     ),
-    "Travel to town": Task(
-        message="Travel to town",
+    TRAVEL_TO_TOWN: Task(
+        message=TRAVEL_TO_TOWN,
         duration=120,
         xp=2,
         category=TaskCategories.OTHER,

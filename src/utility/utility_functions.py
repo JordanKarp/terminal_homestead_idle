@@ -1,5 +1,6 @@
 from src.utility.color_text import color_text
 from src.utility.io import default_io
+from src.constants import BACK
 
 
 def get_number(prompt, io=default_io):
@@ -34,7 +35,7 @@ def ask_question(prompt, text_options_list, approved_options=None, quit=True, io
 
     if quit:
         quit_index = len(text_options_list) + 1
-        io.print(f"{quit_index}. Back")
+        io.print(f"{quit_index}. {BACK}")
         approved_options.append(quit_index)
 
     choice = int(get_number_in_list("> ", approved_options, io=io))

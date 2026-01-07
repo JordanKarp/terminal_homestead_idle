@@ -14,10 +14,11 @@ from src.data.item_data import items
 from src.data.structure_data import structures
 
 from src.utility.color_text import color_text
+from src.constants import SETTINGS, ACHIEVEMENTS, SAVE_SETTINGS, NEW_GAME, LOAD_GAME, PRESS_ANY_KEY, NO_SAVE_FILES, SETTINGS_SAVED_MSG
 from src.utility.utility_functions import ask_question, get_number, get_non_empty_string
 from src.utility.io import default_io
 
-MAIN_MENU_OPTIONS = ["New Game", "Load Game", "Settings", "Achievements"]
+MAIN_MENU_OPTIONS = [NEW_GAME, LOAD_GAME, SETTINGS, ACHIEVEMENTS]
 SETTING_OPTIONS = options = ["Toggle show all tasks"]
 GAME_TYPES = ["Normal", "Custom"]
 SAVE_FILE_PATH = Path("save_data")
@@ -45,15 +46,15 @@ class Game:
                 # 'Back' selected -> exit main menu / program
                 return
 
-            if choice == "New Game":
+            if choice == NEW_GAME:
                 if homestead := self.new_game():
                     self.play(homestead)
-            elif choice == "Load Game":
+            elif choice == LOAD_GAME:
                 if homestead := self.load_game():
                     self.play(homestead)
-            elif choice == "Settings":
+            elif choice == SETTINGS:
                 self.show_settings_menu()
-            elif choice == "Achievements":
+            elif choice == ACHIEVEMENTS:
                 self.show_achievements_menu()
 
     def show_settings_menu(self):
@@ -62,29 +63,29 @@ class Game:
                 f"Toggle show all tasks (currently: {self.settings.show_all})",
                 f"Toggle autosave (currently: {self.settings.autosave})",
                 f"Set autosave interval (minutes) (currently: {self.settings.autosave_interval})",
-                "Save settings",
+                SAVE_SETTINGS,
             ]
 
             choice = ask_question("Settings", options, io=self.io)
-            if not choice or choice == "Back":
+            if not choice or choice == BACK:
                 return
             if choice.startswith("Toggle show all tasks"):
                 self.settings.show_all = not self.settings.show_all
                 self.io.print(f"Show all tasks set to {self.settings.show_all}")
-                self.io.input("Press any key to continue.")
+                self.io.input(PRESS_ANY_KEY)
             elif choice.startswith("Toggle autosave"):
                 self.settings.autosave = not self.settings.autosave
                 self.io.print(f"Autosave set to {self.settings.autosave}")
-                self.io.input("Press any key to continue.")
+                self.io.input(PRESS_ANY_KEY)
             elif choice.startswith("Set autosave interval"):
                 val = get_number("Autosave interval (minutes): ", io=self.io)
                 self.settings.autosave_interval = int(val)
                 self.io.print(f"Autosave interval set to {self.settings.autosave_interval} minutes")
-                self.io.input("Press any key to continue.")
-            elif choice == "Save settings":
+                self.io.input(PRESS_ANY_KEY)
+            elif choice == SAVE_SETTINGS:
                 self.save_settings()
-                self.io.print("Settings saved.")
-                self.io.input("Press any key to continue.")
+                self.io.print(SETTINGS_SAVED_MSG)
+                self.io.input(PRESS_ANY_KEY)
 
     def settings_path(self):
         return SAVE_FILE_PATH / "settings.json"
@@ -123,7 +124,7 @@ class Game:
         else:
             for a in achievements:
                 self.io.print(f"  - {a}")
-        self.io.input("Press any key to continue.")
+        self.io.input(PRESS_ANY_KEY)
 
     def play(self, homestead):
         run = True
@@ -189,15 +190,15 @@ class Game:
         # Ensure save directory exists and list save files with metadata
         save_dir = SAVE_FILE_PATH
         if not save_dir.exists():
-            self.io.print("No save files found.")
-            self.io.input("Press any key to return to menu.")
+            self.io.print(NO_SAVE_FILES)
+            self.io.input(PRESS_ANY_KEY + " to return to menu.")
             return False
 
         files = [p for p in save_dir.glob("*.sav") if p.is_file()]
         files += [p for p in save_dir.glob("*.json") if p.is_file()]
         if not files:
-            self.io.print("No save files found.")
-            self.io.input("Press any key to return to menu.")
+            self.io.print(NO_SAVE_FILES)
+            self.io.input(PRESS_ANY_KEY + " to return to menu.")
             return False
 
         # Sort by modified time (newest first)
@@ -228,8 +229,8 @@ class Game:
                     io=self.io,
                 )
                 if confirm != "Yes":
-                    self.io.print("Load cancelled.")
-                    self.io.input("Press any key to return to menu.")
+                    self.io.print(LOAD_CANCELLED)
+                    self.io.input(PRESS_ANY_KEY + " to return to menu.")
                     return False
                 with open(file_path, "rb") as f:
                     item = pickle.load(f)
@@ -237,13 +238,13 @@ class Game:
                     return item
             else:
                 self.io.print(f"Unknown save format: {file_path.suffix}")
-                self.io.input("Press any key to return to menu.")
+                self.io.input(PRESS_ANY_KEY + " to return to menu.")
                 return False
         except (FileNotFoundError, pickle.UnpicklingError, EOFError, json.JSONDecodeError) as e:
-            self.io.print(f"Failed to load save '{response}': {e}")
-            self.io.input("Press any key to return to menu.")
+            self.io.print(f"{FAILED_LOAD_SAVE} '{response}': {e}")
+            self.io.input(PRESS_ANY_KEY + " to return to menu.")
             return False
         except Exception as e:
             self.io.print(f"An unexpected error occurred loading '{response}': {e}")
-            self.io.input("Press any key to return to menu.")
+            self.io.input(PRESS_ANY_KEY + " to return to menu.")
             return False

@@ -24,5 +24,6 @@ def test_main_menu_returns_after_settings():
     # run should return after we select Back on main menu
     game.run()
     # Ensure we saw Settings prompt and main menu cleared at least once
-    assert any("Settings" in o for o in fake.outputs)
+    from src.constants import SETTINGS
+    assert any(SETTINGS in o for o in fake.outputs)
     assert "<clear>" in fake.outputs

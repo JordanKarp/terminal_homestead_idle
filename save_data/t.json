@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "player": {
+    "name": "t",
+    "profession": "p",
+    "wallet": 0,
+    "location": "Home",
+    "inventory": []
+  },
+  "environment": {
+    "tree": 54,
+    "bush": 30,
+    "rock": 338,
+    "stump": 2,
+    "mushroom": 21,
+    "berry bush": 15
+  },
+  "structures": [],
+  "game_time": [
+    1,
+    7,
+    0
+  ],
+  "messages": []
+}
