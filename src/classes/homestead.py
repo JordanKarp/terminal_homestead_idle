@@ -1,14 +1,25 @@
-import pickle
+import json
 from pathlib import Path
+from datetime import datetime
 
+from src.classes.environment import Environment
 from src.classes.message_log import MessageLog
 from src.classes.task import Task, parse_category
+from src.classes.player import Player
+from src.classes.inventory import Inventory
+from src.classes.game_time import GameTime
+from src.classes.natural_resource import NaturalResource
+from src.classes.message_log import Message
+
 from src.utility.utility_functions import ask_question
-from src.data.task_data import tasks, menu_tasks, town_tasks
 from src.utility.color_text import color_text, strip_ansi
-from src.utility.clear_terminal import clear_terminal
 from src.utility.io import default_io
-from src.utility.io import default_io
+
+from src.data.task_data import tasks, menu_tasks, town_tasks
+from src.data.item_data import items as ITEMS
+from src.data.structure_data import structures as STRUCTURES
+from src.data.profession_data import professions as PROFESSIONS
+from src.data.natural_resource_data import natural_resources as NATURAL_RESOURCE_DATA
 
 
 class Homestead:
@@ -148,7 +159,12 @@ class Homestead:
             self.player.travel_to("Town")
         elif task.message == "View Message Log":
             self.io.clear()
-            self.message.show_log()
+            # show_log now returns a string; print it via IO
+            log_text = self.message.show_log()
+            if log_text:
+                self.io.print(log_text)
+            else:
+                self.io.print("<no messages>")
             self.io.input("Press any key to proceed.")
         elif task.message == "Settings":
             # Simple in-game settings hook: toggle showing all tasks for this homestead
@@ -162,12 +178,6 @@ class Homestead:
             # Simple placeholder: show that achievements are unimplemented
             self.io.print("Achievements placeholder: no achievements tracked yet.")
             self.io.input("Press any key to continue.")
-        elif task.message == "Settings":
-            # TODO Settings
-            ...
-        elif task.message == "Achievements":
-            # TODO Settings
-            ...
         elif task.message == "Save Game":
             self.save_game()
 
@@ -195,17 +205,17 @@ class Homestead:
         self.io.print(self.message.show_most_recent)
         self.io.print()
 
-        default_io.print(f"{color_text('PLAYER', style='underline')}:")
-        default_io.print(self.player.profession)
-        default_io.print(self.player.wallet)
-        default_io.print(self.player.experience)
-        default_io.print()
+        self.io.print(f"{color_text('PLAYER', style='underline')}:")
+        self.io.print(self.player.profession)
+        self.io.print(self.player.wallet)
+        self.io.print(self.player.experience)
+        self.io.print()
 
-        default_io.print(f"{color_text('NATURE', style='underline')}:")
-        default_io.print(self.environment)
+        self.io.print(f"{color_text('NATURE', style='underline')}:")
+        self.io.print(self.environment)
 
-        default_io.print(f"{color_text('INVENTORY', style='underline')}:")
-        default_io.print(self.player.inventory)
+        self.io.print(f"{color_text('INVENTORY', style='underline')}:")
+        self.io.print(self.player.inventory)
 
         self.io.print(f"{color_text('STRUCTURES', style='underline')}:")
         for struct in self.structures:
@@ -221,7 +231,7 @@ class Homestead:
         save_dir.mkdir(parents=True, exist_ok=True)
         # sanitize filename by replacing path separators
         safe_name = str(self.player.name).replace("/", "_").replace("\\", "_")
-        file_path = save_dir / f"{safe_name}.sav"
+        file_path = save_dir / f"{safe_name}.json"
 
         # If file exists, confirm overwrite
         if file_path.exists():
@@ -231,10 +241,82 @@ class Homestead:
                 return
 
         try:
-            with open(file_path, "wb") as f:
-                pickle.dump(self, f)
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(self.to_dict(), f, indent=2)
             self.io.print(f"Game saved to {file_path}")
             self.io.input("Press any key to continue.")
         except Exception as e:
             self.io.print(f"Failed to save game: {e}")
             self.io.input("Press any key to continue.")
+
+    def to_dict(self):
+        """Serialize homestead to a JSON-safe dict."""
+        return {
+            "version": 1,
+            "player": {
+                "name": self.player.name,
+                "profession": getattr(self.player.profession, "name", str(self.player.profession)),
+                "wallet": getattr(self.player.wallet, "balance", 0),
+                "location": self.player.location,
+                "inventory": [(name, data["count"]) for name, data in self.player.inventory.items.items()],
+            },
+            "environment": {name: res.count for name, res in self.environment.natural_resources.items()},
+            "structures": [s if isinstance(s, str) else s.name for s in self.structures],
+            "game_time": self.game_time.as_tuple(),
+            "messages": [
+                {"text": m.text, "start": m.start_time.isoformat(), "duration": m.duration}
+                for m in self.message.messages
+            ],
+        }
+
+    @classmethod
+    def from_dict(cls, data, io=default_io):
+        """Reconstruct a Homestead from a saved dict."""
+        # Player
+        p = data.get("player", {})
+        prof_name = p.get("profession")
+        profession = PROFESSIONS.get(prof_name, prof_name)
+        player = Player(name=p.get("name", "Player"), profession=profession, starting_cash=p.get("wallet", 0))
+        # Reset inventory and repopulate from saved items
+        player.inventory = Inventory()
+        for item_name, count in p.get("inventory", []):
+            if item_name in ITEMS:
+                player.inventory.add_item(ITEMS[item_name], count)
+        player.location = p.get("location", "Home")
+
+        # Environment
+        env_counts = data.get("environment", {})
+        # Build NaturalResource objects using data file defaults where possible
+        nat_resources = {}
+        for name, count in env_counts.items():
+            info = NATURAL_RESOURCE_DATA.get(name, {})
+            plural = info.get("plural_name", name)
+            desc = info.get("description", "No Description Found")
+            growth = info.get("growth_rate", 0)
+            nat_resources[name] = NaturalResource(name, plural, desc, count, growth)
+        environment = Environment(nat_resources)
+
+        # Structures
+        struct_list = []
+        for s in data.get("structures", []):
+            if s in STRUCTURES:
+                struct_list.append(STRUCTURES[s])
+            else:
+                struct_list.append(s)
+
+        # Game time
+        gt = GameTime()
+        day, hour, minute = data.get("game_time", gt.as_tuple())
+        gt.time = datetime(gt.time.year, gt.time.month, day, hour, minute)
+
+        homestead = cls(player, environment, struct_list, gt, io=io)
+
+        # Messages
+        for m in data.get("messages", []):
+            try:
+                start = datetime.fromisoformat(m.get("start"))
+            except Exception:
+                start = gt.time
+            homestead.message.messages.append(Message(m.get("text", ""), start, m.get("duration", 0)))
+
+        return homestead

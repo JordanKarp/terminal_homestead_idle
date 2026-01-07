@@ -11,10 +11,8 @@ from src.data.profession_data import professions
 from src.data.item_data import items
 from src.data.structure_data import structures
 
-from src.utility.clear_terminal import clear_terminal
 from src.utility.color_text import color_text
-from src.utility.list_folder_items import list_folder_items
-from src.utility.utility_functions import ask_question, get_number
+from src.utility.utility_functions import ask_question, get_number, get_non_empty_string
 from src.utility.io import default_io
 
 MAIN_MENU_OPTIONS = ["New Game", "Load Game", "Settings", "Achievements"]
@@ -81,7 +79,7 @@ class Game:
             run = homestead.game_loop()
 
     def new_game(self):
-        name = self.io.input("Enter player name: ")
+        name = get_non_empty_string("Enter player name: ", min_length=1, max_length=30, io=self.io)
         game_type = ask_question("Choose your game type: ", GAME_TYPES, io=self.io)
         if game_type == "Normal":
             return self.normal_game(name)
@@ -138,34 +136,59 @@ class Game:
         # Ensure save directory exists and list save files with metadata
         save_dir = SAVE_FILE_PATH
         if not save_dir.exists():
-            default_io.print("No save files found.")
-            default_io.input("Press any key to return to menu.")
+            self.io.print("No save files found.")
+            self.io.input("Press any key to return to menu.")
             return False
 
         files = [p for p in save_dir.glob("*.sav") if p.is_file()]
+        files += [p for p in save_dir.glob("*.json") if p.is_file()]
         if not files:
-            default_io.print("No save files found.")
-            default_io.input("Press any key to return to menu.")
+            self.io.print("No save files found.")
+            self.io.input("Press any key to return to menu.")
             return False
 
         # Sort by modified time (newest first)
         files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
 
         options = [f"{p.name} ({datetime.fromtimestamp(p.stat().st_mtime).strftime('%Y-%m-%d %H:%M')})" for p in files]
-        response = ask_question("Which game?", options)
+        response = ask_question("Which game?", options, io=self.io)
         # strip metadata appended to choice
         response_name = response.split(" (")[0]
         file_path = save_dir / response_name
         try:
-            with open(file_path, "rb") as f:
-                item = pickle.load(f)
-                default_io.print(item)
-                return item
-        except (FileNotFoundError, pickle.UnpicklingError, EOFError) as e:
-            default_io.print(f"Failed to load save '{response}': {e}")
-            default_io.input("Press any key to return to menu.")
+            if file_path.suffix == ".json":
+                import json
+
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    # Reconstruct homestead from dict
+                    homestead = Homestead.from_dict(data, io=self.io)
+                    self.io.print(homestead)
+                    return homestead
+            elif file_path.suffix == ".sav":
+                # Legacy pickle file — warn user and require explicit confirmation
+                confirm = ask_question(
+                    "This save appears to be a legacy pickle file. Loading it can execute arbitrary code. Proceed?",
+                    ["Yes", "No"],
+                    io=self.io,
+                )
+                if confirm != "Yes":
+                    self.io.print("Load cancelled.")
+                    self.io.input("Press any key to return to menu.")
+                    return False
+                with open(file_path, "rb") as f:
+                    item = pickle.load(f)
+                    self.io.print(item)
+                    return item
+            else:
+                self.io.print(f"Unknown save format: {file_path.suffix}")
+                self.io.input("Press any key to return to menu.")
+                return False
+        except (FileNotFoundError, pickle.UnpicklingError, EOFError, json.JSONDecodeError) as e:
+            self.io.print(f"Failed to load save '{response}': {e}")
+            self.io.input("Press any key to return to menu.")
             return False
         except Exception as e:
-            default_io.print(f"An unexpected error occurred loading '{response}': {e}")
-            default_io.input("Press any key to return to menu.")
+            self.io.print(f"An unexpected error occurred loading '{response}': {e}")
+            self.io.input("Press any key to return to menu.")
             return False

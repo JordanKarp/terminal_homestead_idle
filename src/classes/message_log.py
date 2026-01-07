@@ -31,10 +31,13 @@ class MessageLog:
 
     @property
     def show_most_recent(self):
-        return self.messages[-1] if self.messages else ""
+        if not self.messages:
+            return ""
+        return self.messages[-1].format
     
     def show_log(self):
-        print('\n'.join([m.format for m in self.messages]))
+        """Return the full message log as a string (one message per line)."""
+        return "\n".join([m.format for m in self.messages])
     
     def add_message(self, text, start_time, duration):
         if self.messages and text == self.messages[-1].text:

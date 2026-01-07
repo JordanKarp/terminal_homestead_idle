@@ -89,3 +89,27 @@ def question(prompt, options: dict, io=default_io):
 
     selected_label = labeled_options[choice - 1]
     return options.get(selected_label)
+
+
+def get_non_empty_string(prompt, min_length=1, max_length=50, io=default_io):
+    """Prompt for a non-empty, trimmed string between min_length and max_length.
+
+    Returns the validated string.
+    """
+    while True:
+        value = io.input(prompt)
+        if value is None:
+            io.print("Error: No input provided.")
+            continue
+        value = str(value).strip()
+        if len(value) < min_length:
+            io.print(f"Error: Please enter at least {min_length} character(s).")
+            continue
+        if len(value) > max_length:
+            io.print(f"Error: Maximum length is {max_length} characters.")
+            continue
+        # basic character check: allow printable characters except control chars
+        if any(ord(ch) < 32 for ch in value):
+            io.print("Error: Invalid characters in input.")
+            continue
+        return value

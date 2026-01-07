@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "player": {
+    "name": "Jordan",
+    "profession": "Woodsman",
+    "wallet": 50,
+    "location": "Home",
+    "inventory": [
+      [
+        "Log",
+        2
+      ],
+      [
+        "Stick",
+        5
+      ],
+      [
+        "Mushroom",
+        2
+      ],
+      [
+        "Rock",
+        1
+      ],
+      [
+        "Rock Shard",
+        2
+      ]
+    ]
+  },
+  "environment": {
+    "tree": 26,
+    "bush": 86,
+    "rock": 313,
+    "stump": 0,
+    "mushroom": 11,
+    "berry bush": 30
+  },
+  "structures": [],
+  "game_time": [
+    1,
+    9,
+    30
+  ],
+  "messages": [
+    {
+      "text": "Gather Sticks",
+      "start": "2000-01-01T07:00:00",
+      "duration": 30
+    },
+    {
+      "text": "Gather Mushrooms",
+      "start": "2000-01-01T07:30:00",
+      "duration": 30
+    },
+    {
+      "text": "Gather Rocks",
+      "start": "2000-01-01T08:00:00",
+      "duration": 30
+    },
+    {
+      "text": "Nap Rocks",
+      "start": "2000-01-01T08:30:00",
+      "duration": 60
+    },
+    {
+      "text": "Settings",
+      "start": "2000-01-01T09:30:00",
+      "duration": 0
+    },
+    {
+      "text": "Save Game",
+      "start": "2000-01-01T09:30:00",
+      "duration": 0
+    }
+  ]
+}
