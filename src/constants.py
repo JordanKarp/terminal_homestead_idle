@@ -23,6 +23,9 @@ SETTINGS_SAVED_MSG = "Settings saved."
 FAILED_SAVE_GAME = "Failed to save game"
 FAILED_LOAD_SAVE = "Failed to load save"
 LOAD_CANCELLED = "Load cancelled."
+LOCATION_INCORRECT = "Location incorrect."
+
+MAIN_MENU_OPTIONS = [NEW_GAME, LOAD_GAME, SETTINGS, ACHIEVEMENTS]
 
 __all__ = [
     "SETTINGS",
@@ -32,4 +35,16 @@ __all__ = [
     "TRAVEL_BACK_HOME",
     "TRAVEL_TO_TOWN",
     "SAVE_SETTINGS",
+    "NEW_GAME",
+    "LOAD_GAME",
+    "BACK",
+    "PRESS_ANY_KEY",
+    "NO_SAVE_FILES",
+    "SAVE_CANCELLED",
+    "SETTINGS_SAVED_MSG",
+    "FAILED_SAVE_GAME",
+    "FAILED_LOAD_SAVE",
+    "LOAD_CANCELLED",
+    "MAIN_MENU_OPTIONS", 
+    "LOCATION_INCORRECT"
 ]

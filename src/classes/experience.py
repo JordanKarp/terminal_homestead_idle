@@ -1,9 +1,17 @@
+"""Experience and leveling helpers.
+
+This module contains the `Experience` class which tracks XP by category
+and computes levels and active bonuses using provided `SkillBonusTable`
+instances.
+"""
+
 import json
 
 from src.classes.skill_bonus import SkillBonusTable
 
 
 class Experience:
+    """Track XP per category and compute derived metrics like level."""
     def __init__(self, categories=None, bonus_tables=None):
         self.xp = {}
 
@@ -53,6 +61,7 @@ class Experience:
 
 
 def load_bonus_tables_from_file(filename="skill_bonuses.json"):
+    """Load a mapping of category name -> SkillBonusTable from JSON file."""
     with open(filename, "r") as f:
         raw = json.load(f)
 

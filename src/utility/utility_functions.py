@@ -1,9 +1,19 @@
+"""Small interactive helpers for CLI prompts and input validation.
+
+These functions centralize common user prompts and validation so that
+the UI remains consistent and testable.
+"""
+
 from src.utility.color_text import color_text
 from src.utility.io import default_io
 from src.constants import BACK
 
 
 def get_number(prompt, io=default_io):
+    """Prompt for an integer until a valid one is entered.
+
+    Returns the parsed int.
+    """
     while True:
         try:
             num = int(io.input(prompt))
@@ -13,6 +23,10 @@ def get_number(prompt, io=default_io):
 
 
 def get_number_in_list(prompt, approved_list, io=default_io):
+    """Prompt for an integer that must be present in approved_list.
+
+    Repeats until a valid choice is provided.
+    """
     while True:
         try:
             number = int(io.input(prompt))
@@ -24,6 +38,11 @@ def get_number_in_list(prompt, approved_list, io=default_io):
 
 
 def ask_question(prompt, text_options_list, approved_options=None, quit=True, io=default_io):
+    """Present a numbered list of options and return the selected label.
+
+    If `quit` is True an extra 'Back' option is appended and False is
+    returned when the user selects it.
+    """
     io.print(color_text(prompt, style="underline"))
     if not approved_options:
         approved_options = list(range(1, len(text_options_list) + 1))
@@ -71,6 +90,11 @@ def get_number_in_range(prompt, max_val, min_val=1, io=default_io):
 
 def question(prompt, options: dict, io=default_io):
 
+    """Prompt the user with a labeled options mapping and return the value.
+
+    The provided `options` argument maps labels -> returned values.
+    Selecting the Quit option returns False.
+    """
     io.print(prompt)
 
     # Build the numbered menu

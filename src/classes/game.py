@@ -1,3 +1,9 @@
+"""Top-level game entrypoint and menu handling.
+
+This module defines the `Game` class which manages the main menu, settings
+persistence, and controls creating or loading `Homestead` instances.
+"""
+
 import pickle
 import json
 from pathlib import Path
@@ -14,17 +20,17 @@ from src.data.item_data import items
 from src.data.structure_data import structures
 
 from src.utility.color_text import color_text
-from src.constants import SETTINGS, ACHIEVEMENTS, SAVE_SETTINGS, NEW_GAME, LOAD_GAME, PRESS_ANY_KEY, NO_SAVE_FILES, SETTINGS_SAVED_MSG
+from src.constants import *
 from src.utility.utility_functions import ask_question, get_number, get_non_empty_string
 from src.utility.io import default_io
 
-MAIN_MENU_OPTIONS = [NEW_GAME, LOAD_GAME, SETTINGS, ACHIEVEMENTS]
 SETTING_OPTIONS = options = ["Toggle show all tasks"]
 GAME_TYPES = ["Normal", "Custom"]
 SAVE_FILE_PATH = Path("save_data")
 
 
 class Game:
+    """Main game controller handling menus, settings and play loop."""
     def __init__(self, settings: Settings = None):
         from src.utility.io import default_io
         # Simple settings storage (expandable)
@@ -38,6 +44,10 @@ class Game:
             self.io.print("Warning: failed to load settings, using defaults.")
 
     def run(self):
+        """Show the main menu and dispatch selected actions.
+
+        This method loops until the player exits the program.
+        """
         # Main menu (loop so returning from submenus goes back to main menu)
         while True:
             self.io.clear()
@@ -58,6 +68,10 @@ class Game:
                 self.show_achievements_menu()
 
     def show_settings_menu(self):
+        """Display and handle the settings menu, persisting changes.
+
+        This lets players toggle visibility and autosave options.
+        """
         while True:
             options = [
                 f"Toggle show all tasks (currently: {self.settings.show_all})",
@@ -88,9 +102,14 @@ class Game:
                 self.io.input(PRESS_ANY_KEY)
 
     def settings_path(self):
+        """Return the path to the settings JSON file."""
         return SAVE_FILE_PATH / "settings.json"
 
     def load_settings(self):
+        """Load settings from disk into the Game instance.
+
+        Returns True if settings were loaded, False if not present or on error.
+        """
         SAVE_FILE_PATH.mkdir(parents=True, exist_ok=True)
         path = self.settings_path()
         if not path.exists():
@@ -106,6 +125,10 @@ class Game:
             return False
 
     def save_settings(self):
+        """Persist current settings to disk in JSON format.
+
+        Returns True on success, False on failure.
+        """
         SAVE_FILE_PATH.mkdir(parents=True, exist_ok=True)
         path = self.settings_path()
         try:
@@ -117,6 +140,7 @@ class Game:
             return False
 
     def show_achievements_menu(self):
+        """Display unlocked achievements (placeholder display)."""
         achievements = self.settings.achievements
         self.io.print("Achievements:")
         if not achievements:
@@ -127,12 +151,14 @@ class Game:
         self.io.input(PRESS_ANY_KEY)
 
     def play(self, homestead):
+        """Enter the homestead play loop until the homestead requests exit."""
         run = True
         while run:
             self.io.clear()
             run = homestead.game_loop()
 
     def new_game(self):
+        """Begin a new game flow and return a fresh Homestead instance or False."""
         name = get_non_empty_string("Enter player name: ", min_length=1, max_length=30, io=self.io)
         game_type = ask_question("Choose your game type: ", GAME_TYPES, io=self.io)
         if game_type == "Normal":
@@ -143,6 +169,7 @@ class Game:
             return False
 
     def normal_game(self, name):
+        """Create a standard, preconfigured Homestead for `name`."""
         show_all = self.settings.show_all
         profession_name = ask_question(
             "Choose your profession: ", list(professions.keys()), io=self.io
@@ -155,6 +182,7 @@ class Game:
         return Homestead(player, environment, structures, game_time, show_all, io=self.io, game=self)
 
     def custom_game(self, name):
+        """Create a custom homestead: prompt for starting cash, items and structures."""
         show_all = self.settings.show_all
         starting_cash = get_number("Starting Cash: ", io=self.io)
         player = Player(name, profession="Customizer", starting_cash=int(starting_cash))
@@ -165,11 +193,13 @@ class Game:
         return Homestead(player, environment, structures, game_time, show_all, io=self.io, game=self)
 
     def create_custom_environment(self):
+        """Prompt the user to create a custom environment and return it."""
         self.io.print(color_text("Create Environment:", style="underline"))
         resources = Environment().prompt_custom_resources()
         return Environment(resources)
 
     def add_custom_items(self, player):
+        """Interactively add starting items to `player` via prompt."""
         item_name = True
         while item_name:
             if item_name := ask_question("Pick starting item(s):", list(items), io=self.io):
@@ -177,6 +207,7 @@ class Game:
                 player.inventory.add_item(items[item_name], count)
 
     def add_custom_structures(self):
+        """Interactively add starting structures for a custom game."""
         structures_to_add = []
         structure_name = True
         while structure_name:
@@ -187,6 +218,11 @@ class Game:
         return structures_to_add
 
     def load_game(self):
+        """List existing saves and load the selected file, returning a Homestead.
+
+        Supports legacy pickle (.sav) files but requires explicit confirmation
+        before loading for safety reasons.
+        """
         # Ensure save directory exists and list save files with metadata
         save_dir = SAVE_FILE_PATH
         if not save_dir.exists():

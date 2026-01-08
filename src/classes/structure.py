@@ -10,6 +10,7 @@ class StructureTypes(Enum):
 
 @dataclass(frozen=True)
 class Structure:
+    """Represents a buildable structure with category and value metadata."""
     name: str
     plural_name: str
     description: str

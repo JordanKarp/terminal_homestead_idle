@@ -1,8 +1,15 @@
+"""Simple in-game message log and helpers.
+
+`Message` instances record a short text, start time and duration; the
+`MessageLog` keeps an ordered list and exposes display helpers.
+"""
+
 from datetime import datetime, timedelta
 from typing import List
 
 
 class Message:
+    """A single message with start time and duration."""
     def __init__(self, text: str, start_time: datetime, duration):
         self.text = text
         self.start_time = start_time
@@ -26,6 +33,11 @@ class Message:
 
 
 class MessageLog:
+    """An append-only message log for game events.
+
+    Messages are coalesced when the same text is added consecutively
+    (the duration is increased instead of appending a duplicate).
+    """
     def __init__(self) -> None:
         self.messages: List[Message] = []
 
@@ -34,12 +46,13 @@ class MessageLog:
         if not self.messages:
             return ""
         return self.messages[-1].format
-    
+
     def show_log(self):
         """Return the full message log as a string (one message per line)."""
         return "\n".join([m.format for m in self.messages])
-    
+
     def add_message(self, text, start_time, duration):
+        """Append a message or extend the last message if identical."""
         if self.messages and text == self.messages[-1].text:
             self.messages[-1].duration += duration
         else:

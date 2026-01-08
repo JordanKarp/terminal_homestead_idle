@@ -1,3 +1,5 @@
+"""IO abstraction layer used to decouple console operations for testing."""
+
 from src.utility.clear_terminal import clear_terminal
 
 

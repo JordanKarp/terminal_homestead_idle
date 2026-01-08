@@ -4,6 +4,7 @@ from src.classes.skill_bonus import SkillBonus
 
 @dataclass(frozen=True)
 class Profession:
+    """Player profession metadata including starting cash and bonuses."""
     name: str
     starting_cash: int
     skill_bonus: list[SkillBonus]

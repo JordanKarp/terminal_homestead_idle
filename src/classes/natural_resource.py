@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class NaturalResource:
+    """A single natural resource with count and growth behavior."""
     name: str
     plural_name: str
     description: str

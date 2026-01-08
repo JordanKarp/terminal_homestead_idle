@@ -1,3 +1,9 @@
+"""Task representation and category helpers.
+
+Provides the `Task` dataclass used by the game and helpers for working
+with task categories.
+"""
+
 from dataclasses import dataclass, field
 from enum import Enum, auto
 
@@ -19,6 +25,10 @@ class TaskCategories(Enum):
 
 
 def parse_category(value: str) -> TaskCategories:
+    """Parse a human-friendly category string into a TaskCategories value.
+
+    Examples: 'Land Maintenance' -> TaskCategories.LAND_MAINTENANCE
+    """
     # Normalize string format to match enum names
     normalized = value.strip().replace(" ", "_").upper()
     return TaskCategories[normalized]
@@ -26,6 +36,11 @@ def parse_category(value: str) -> TaskCategories:
 
 @dataclass(frozen=True)
 class Task:
+    """A single action the player can perform.
+
+    Attributes mirror the saved task format and include costs, rewards and
+    prerequisites used to determine availability and effects.
+    """
     message: str = "Task Mesasge"
     duration: int = 1
     xp: int = 0

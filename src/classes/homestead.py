@@ -37,6 +37,11 @@ from src.data.natural_resource_data import natural_resources as NATURAL_RESOURCE
 
 
 class Homestead:
+    """Represent a player's homestead and provide task handling and persistence.
+
+    Homestead manages available tasks, the message log, structures, the
+    environment, and exposes methods for displaying and saving state.
+    """
     def __init__(self, player, environment, structures, game_time, show_all=False, io=default_io, game=None):
         self.player = player
         self.environment = environment

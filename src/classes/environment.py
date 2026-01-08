@@ -6,6 +6,11 @@ from src.utility.utility_functions import get_number
 
 
 class Environment:
+    """Represents the natural resources available around the homestead.
+
+    Provides helpers to query availability, adjust resource counts and
+    generate defaults from static data.
+    """
     def __init__(self, nat_resources=None):
         if not nat_resources:
             nat_resources = self.generate_natural_resources()
@@ -22,6 +27,7 @@ class Environment:
             self.natural_resources[resource].count += amount
 
     def generate_natural_resources(self):
+        """Create resource objects using defaults from the data files."""
         resources = {}
         for resource_name, resource_data in natural_resources.items():
             minimum = resource_data.get("minimum", 0)
@@ -38,6 +44,7 @@ class Environment:
 
     @staticmethod
     def prompt_custom_resources():
+        """Interactively prompt the user to specify counts for each resource."""
         resources = {}
         for resource_name, resource_data in natural_resources.items():
             plural_name = resource_data.get("plural_name", resource_name)
