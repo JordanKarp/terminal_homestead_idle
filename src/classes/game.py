@@ -4,7 +4,6 @@ This module defines the `Game` class which manages the main menu, settings
 persistence, and controls creating or loading `Homestead` instances.
 """
 
-import pickle
 import json
 from pathlib import Path
 from datetime import datetime
@@ -220,18 +219,16 @@ class Game:
     def load_game(self):
         """List existing saves and load the selected file, returning a Homestead.
 
-        Supports legacy pickle (.sav) files but requires explicit confirmation
-        before loading for safety reasons.
+        Only JSON save files are supported. Legacy pickle (.sav) files have been
+        removed to avoid executing arbitrary code during load.
         """
         # Ensure save directory exists and list save files with metadata
         save_dir = SAVE_FILE_PATH
         if not save_dir.exists():
             self.io.print(NO_SAVE_FILES)
-            self.io.input(PRESS_ANY_KEY + " to return to menu.")
+            self.io.input(PRESS_ANY_KEY)
             return False
-
-        files = [p for p in save_dir.glob("*.sav") if p.is_file()]
-        files += [p for p in save_dir.glob("*.json") if p.is_file()]
+        files = [p for p in save_dir.glob("*.json") if p.is_file()]
         if not files:
             self.io.print(NO_SAVE_FILES)
             self.io.input(PRESS_ANY_KEY + " to return to menu.")
@@ -247,8 +244,6 @@ class Game:
         file_path = save_dir / response_name
         try:
             if file_path.suffix == ".json":
-                import json
-
                 with open(file_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     # Reconstruct homestead from dict
@@ -257,30 +252,15 @@ class Game:
                     homestead.game = self
                     self.io.print(homestead)
                     return homestead
-            elif file_path.suffix == ".sav":
-                # Legacy pickle file — warn user and require explicit confirmation
-                confirm = ask_question(
-                    "This save appears to be a legacy pickle file. Loading it can execute arbitrary code. Proceed?",
-                    ["Yes", "No"],
-                    io=self.io,
-                )
-                if confirm != "Yes":
-                    self.io.print(LOAD_CANCELLED)
-                    self.io.input(PRESS_ANY_KEY + " to return to menu.")
-                    return False
-                with open(file_path, "rb") as f:
-                    item = pickle.load(f)
-                    self.io.print(item)
-                    return item
             else:
-                self.io.print(f"Unknown save format: {file_path.suffix}")
-                self.io.input(PRESS_ANY_KEY + " to return to menu.")
+                self.io.print(f"Unsupported save format: {file_path.suffix}")
+                self.io.input(PRESS_ANY_KEY)
                 return False
-        except (FileNotFoundError, pickle.UnpicklingError, EOFError, json.JSONDecodeError) as e:
+        except (FileNotFoundError, EOFError, json.JSONDecodeError) as e:
             self.io.print(f"{FAILED_LOAD_SAVE} '{response}': {e}")
-            self.io.input(PRESS_ANY_KEY + " to return to menu.")
+            self.io.input(PRESS_ANY_KEY)
             return False
         except Exception as e:
             self.io.print(f"An unexpected error occurred loading '{response}': {e}")
-            self.io.input(PRESS_ANY_KEY + " to return to menu.")
+            self.io.input(PRESS_ANY_KEY)
             return False
