@@ -26,102 +26,113 @@ professions = {
         starting_structures=["Axe"],
     ),
     "Herbalist": Profession(
-        "Herbalist",
-        50,
-        SkillBonus(
+        name="Herbalist",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Miner": Profession(
-        "Miner",
-        50,
-        SkillBonus(
+        name="Miner",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Rancher": Profession(
-        "Rancher",
-        50,
-        SkillBonus(
+        name="Rancher",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Gatherer": Profession(
-        "Gatherer",
-        50,
-        SkillBonus(
+        name="Gatherer",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Farmer": Profession(
-        "Farmer",
-        50,
-        SkillBonus(
+        name="Farmer",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Hunter": Profession(
-        "Hunter",
-        50,
-        SkillBonus(
+        name="Hunter",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Blacksmith": Profession(
-        "Blacksmith",
-        50,
-        SkillBonus(
+        name="Blacksmith",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Carpenter": Profession(
-        "Carpenter",
-        50,
-        SkillBonus(
+        name="Carpenter",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Merchant": Profession(
-        "Merchant",
-        50,
-        SkillBonus(
+        name="Merchant",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Chef": Profession(
-        "Chef",
-        50,
-        SkillBonus(
+        name="Chef",
+        starting_cash=50,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        ["Axe"],
+        starting_items=[],
+        starting_structures=[],
     ),
     "Banker": Profession(
-        "Banker",
-        500,
-        SkillBonus(
+        name="Banker",
+        starting_cash=500,
+        skill_bonus=SkillBonus(
             {"bonus_type": "speed_multiplier", "amount": 2},
             {"bonus_type": "yield_multiplier", "amount": 2},
         ),
-        [],
+        starting_items=[],
+        starting_structures=[],
     ),
 }

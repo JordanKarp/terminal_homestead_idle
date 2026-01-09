@@ -85,7 +85,7 @@ def get_number_in_range(prompt, max_val, min_val=1, io=default_io):
                 return number
             io.print(f"Error: Enter a number between {min_val} and {max_val}.")
         except ValueError:
-            print("Error: Invalid input. Please enter a valid number.")
+            io.print("Error: Invalid input. Please enter a valid number.")
 
 
 def question(prompt, options: dict, io=default_io):

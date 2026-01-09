@@ -52,7 +52,7 @@ items = {
     "Brick": Item(
         name="Brick",
         plural_name="Bricks",
-        description="Builing materila made from clay.",
+        description="Building material made from clay.",
         value=5,
     ),
     "Handle": Item(

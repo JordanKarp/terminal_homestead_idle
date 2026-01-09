@@ -56,7 +56,7 @@ class Inventory:
         return [(name, data["count"]) for name, data in self.items.items()]
 
     def inventory_value(self):
-        return sum(data["value"] * data["count"] for _, data in self.item.items())
+        return sum(data["item"].value * data["count"] for _, data in self.items.items())
 
     def __str__(self):
         if not self.items:

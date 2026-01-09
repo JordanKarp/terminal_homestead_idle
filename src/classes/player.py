@@ -43,7 +43,6 @@ class Player:
     def travel_to(self, location):
         """Move the player to ``location`` if it exists, returning success."""
         if location not in locations:
-            print(LOCATION_INCORRECT)
-            return False
+            raise ValueError(f"Location '{location}' not found.")
         self.location = location
         return True

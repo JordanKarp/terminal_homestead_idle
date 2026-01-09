@@ -104,7 +104,7 @@ tasks = {
     # IDEAS: Gather Reeds
     # LAND MAINTENANCE
     "Chop Tree": Task(
-        message="Chop Trees",
+        message="Chop Tree",
         duration=60,
         xp=2,
         category=TaskCategories.LAND_MAINTENANCE,
