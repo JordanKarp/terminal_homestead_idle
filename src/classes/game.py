@@ -13,6 +13,7 @@ from src.classes.settings import Settings
 from src.classes.player import Player
 from src.classes.game_time import GameTime
 from src.classes.environment import Environment
+from src.classes.map import Map
 
 from src.data.profession_data import professions
 from src.data.item_data import items
@@ -177,8 +178,10 @@ class Game:
         player = Player(name=name, profession=profession)
         structures = []
         environment = Environment()
+        map = Map(15,8)
+        map.generate_new_map()
         game_time = GameTime()
-        return Homestead(player, environment, structures, game_time, show_all, io=self.io, game=self)
+        return Homestead(player, environment,map, structures, game_time, show_all, io=self.io, game=self)
 
     def custom_game(self, name):
         """Create a custom homestead: prompt for starting cash, items and structures."""
@@ -188,8 +191,10 @@ class Game:
         self.add_custom_items(player)
         structures = self.add_custom_structures()
         environment = self.create_custom_environment()
+        map = Map(15,8)
+        map.generate_new_map()
         game_time = GameTime()
-        return Homestead(player, environment, structures, game_time, show_all, io=self.io, game=self)
+        return Homestead(player, environment, map, structures, game_time, show_all, io=self.io, game=self)
 
     def create_custom_environment(self):
         """Prompt the user to create a custom environment and return it."""

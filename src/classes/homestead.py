@@ -3,29 +3,17 @@ from pathlib import Path
 from datetime import datetime
 
 from src.classes.environment import Environment
-from src.classes.message_log import MessageLog
+from src.classes.map import Map
 from src.classes.task import Task, parse_category
 from src.classes.player import Player
 from src.classes.inventory import Inventory
 from src.classes.game_time import GameTime
 from src.classes.natural_resource import NaturalResource
-from src.classes.message_log import Message
+from src.classes.message_log import MessageLog, Message
 
 from src.utility.utility_functions import ask_question, get_number
-from src.constants import (
-    SETTINGS,
-    ACHIEVEMENTS,
-    SAVE_GAME,
-    VIEW_MESSAGE_LOG,
-    TRAVEL_BACK_HOME,
-    TRAVEL_TO_TOWN,
-    SAVE_SETTINGS,
-    PRESS_ANY_KEY,
-    BACK,
-    SETTINGS_SAVED_MSG,
-    SAVE_CANCELLED,
-    FAILED_SAVE_GAME,
-)
+from src.constants import *
+
 from src.utility.color_text import color_text, strip_ansi
 from src.utility.io import default_io
 
@@ -42,9 +30,10 @@ class Homestead:
     Homestead manages available tasks, the message log, structures, the
     environment, and exposes methods for displaying and saving state.
     """
-    def __init__(self, player, environment, structures, game_time, show_all=False, io=default_io, game=None):
+    def __init__(self, player, environment, map, structures, game_time, show_all=False, io=default_io, game=None):
         self.player = player
         self.environment = environment
+        self.map = map
         self.game_time = game_time
         self.structures = structures
         self.message = MessageLog()
@@ -293,6 +282,10 @@ class Homestead:
         self.io.print(self.player.experience)
         self.io.print()
 
+        self.io.print(f"{color_text('MAP', style='underline')}:")
+        self.io.print(self.map.display())
+        self.io.print()
+
         self.io.print(f"{color_text('NATURE', style='underline')}:")
         self.io.print(self.environment)
 
@@ -377,6 +370,7 @@ class Homestead:
             growth = info.get("growth_rate", 0)
             nat_resources[name] = NaturalResource(name, plural, desc, count, growth)
         environment = Environment(nat_resources)
+        map = Map(10,5)
 
         # Structures
         struct_list = []

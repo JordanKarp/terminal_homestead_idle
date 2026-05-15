@@ -1,5 +1,13 @@
 import re
 
+def rgb_text(text, r, g, b, bg=False):
+    """
+    Print text in an RGB color in the terminal.
+    bg=False -> foreground
+    bg=True  -> background
+    """
+    mode = 48 if bg else 38   # 38 = foreground, 48 = background
+    return f"\033[{mode};2;{r};{g};{b}m{text}\033[0m"
 
 def color_text(text, fg=None, bg=None, style=None):
     """
